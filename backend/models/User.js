@@ -6,7 +6,7 @@ const userSchema = mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ['Employee', 'HR', 'Admin'], default: 'Employee' },
+    role: { type: String, enum: ['Employee', 'HR', 'Admin', 'SuperAdmin'], default: 'Employee' },
     empCode: { type: String, unique: true }, // Auto-generated Login ID
     image: { type: String }, // Profile Image URL (Base64 or Link)
 

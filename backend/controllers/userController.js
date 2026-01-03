@@ -330,6 +330,7 @@ const deleteUser = async (req, res) => {
 const getDashboardStats = async (req, res) => {
     const Attendance = require('../models/Attendance');
     const Leave = require('../models/Leave');
+    const Task = require('../models/Task');
 
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -365,10 +366,10 @@ const getDashboardStats = async (req, res) => {
             }
         }
 
-        // 3. Pending Actions (Pending Leaves)
-        const pendingLeaves = await Leave.countDocuments({
-            user: req.user._id,
-            status: 'Pending'
+        // 3. Pending Tasks (Tasks not completed)
+        const pendingTasks = await Task.countDocuments({
+            assignedTo: req.user._id,
+            status: { $in: ['Pending', 'In Progress'] }
         });
         
         // 4. Total Employees in company
@@ -380,6 +381,7 @@ const getDashboardStats = async (req, res) => {
         // 5. Recent Activity (Last 5 items)
         const recentAttendance = await Attendance.find({ user: req.user._id }).sort({ date: -1 }).limit(2).lean();
         const recentLeaves = await Leave.find({ user: req.user._id }).sort({ createdAt: -1 }).limit(2).lean();
+        const recentTasks = await Task.find({ assignedTo: req.user._id }).sort({ createdAt: -1 }).limit(2).lean();
 
         // Normalize and merge activity
         let activity = [
@@ -394,6 +396,13 @@ const getDashboardStats = async (req, res) => {
                 title: `Leave Request (${l.type})`,
                 date: l.createdAt,
                 status: l.status
+            })),
+            ...recentTasks.map(t => ({
+                type: 'task',
+                title: t.title,
+                date: t.createdAt,
+                status: t.status,
+                priority: t.priority
             }))
         ];
 
@@ -404,7 +413,7 @@ const getDashboardStats = async (req, res) => {
         res.json({
             attendanceCount,
             leaveBalance,
-            pendingTasks: pendingLeaves,
+            pendingTasks,
             totalEmployees,
             activity
         });

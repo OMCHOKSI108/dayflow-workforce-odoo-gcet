@@ -12,10 +12,13 @@ TABLE OF CONTENTS
 4. Attendance API
 5. Leave Management API
 6. Announcement API
-7. AI Chatbot API
-8. Error Codes
-9. Request/Response Examples
-10. Security Best Practices
+7. Task Management API
+8. AI Chatbot API
+9. SuperAdmin API
+10. Error Codes
+11. Request/Response Examples
+12. Real-time Updates
+13. Security Best Practices
 
 ═══════════════════════════════════════════════════════════════════════════════
 1. OVERVIEW
@@ -867,7 +870,291 @@ Error Response (403):
 }
 
 ═══════════════════════════════════════════════════════════════════════════════
-7. AI CHATBOT API
+7. TASK MANAGEMENT API
+═══════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+7.1 CREATE TASK (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    POST /api/tasks
+Access:      Admin, HR
+Description: Assign task to employee
+
+Headers:
+Authorization: Bearer <admin_token>
+
+Request Body:
+{
+  "title": "Complete Q1 Report",
+  "description": "Prepare quarterly financial report with all metrics",
+  "assignedTo": "507f1f77bcf86cd799439012",   // Employee User ID
+  "priority": "High",                          // Low, Medium, High, Urgent
+  "dueDate": "2026-01-15"
+}
+
+Success Response (201):
+{
+  "_id": "507f1f77bcf86cd799439017",
+  "title": "Complete Q1 Report",
+  "description": "Prepare quarterly financial report with all metrics",
+  "assignedTo": {
+    "_id": "507f1f77bcf86cd799439012",
+    "name": "Jane Smith",
+    "email": "jane@company.com",
+    "empCode": "ACJA20260002"
+  },
+  "assignedBy": {
+    "_id": "507f1f77bcf86cd799439011",
+    "name": "John Doe",
+    "email": "admin@company.com"
+  },
+  "companyName": "Acme Corporation",
+  "priority": "High",
+  "status": "Pending",
+  "dueDate": "2026-01-15T00:00:00.000Z",
+  "createdAt": "2026-01-03T10:00:00.000Z"
+}
+
+Error Response (403):
+{
+  "message": "Cannot assign tasks to users outside your company"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+7.2 GET ALL TASKS
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/tasks
+Access:      All authenticated users
+Description: Get tasks (Admin: all tasks, Employee: assigned tasks only)
+
+Headers:
+Authorization: Bearer <user_token>
+
+Task Filtering:
+- Admin/HR: See all company tasks
+- Employee: Only tasks assigned to them
+- Company-restricted automatically
+
+Success Response (200):
+[
+  {
+    "_id": "507f1f77bcf86cd799439017",
+    "title": "Complete Q1 Report",
+    "description": "Prepare quarterly financial report",
+    "assignedTo": {
+      "_id": "507f1f77bcf86cd799439012",
+      "name": "Jane Smith",
+      "empCode": "ACJA20260002",
+      "department": "Finance"
+    },
+    "assignedBy": {
+      "_id": "507f1f77bcf86cd799439011",
+      "name": "John Doe"
+    },
+    "priority": "High",
+    "status": "In Progress",
+    "dueDate": "2026-01-15T00:00:00.000Z",
+    "comments": [],
+    "createdAt": "2026-01-03T10:00:00.000Z"
+  }
+]
+
+────────────────────────────────────────────────────────────────────────────────
+7.3 GET MY TASKS
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/tasks/my
+Access:      All authenticated users
+Description: Get tasks assigned to current user (sorted by due date)
+
+Headers:
+Authorization: Bearer <user_token>
+
+Success Response (200):
+[
+  {
+    "_id": "507f1f77bcf86cd799439017",
+    "title": "Complete Q1 Report",
+    "description": "Prepare quarterly financial report",
+    "assignedBy": {
+      "_id": "507f1f77bcf86cd799439011",
+      "name": "John Doe",
+      "email": "admin@company.com"
+    },
+    "priority": "High",
+    "status": "Pending",
+    "dueDate": "2026-01-15T00:00:00.000Z",
+    "comments": [],
+    "createdAt": "2026-01-03T10:00:00.000Z"
+  }
+]
+
+────────────────────────────────────────────────────────────────────────────────
+7.4 GET TASK BY ID
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/tasks/:id
+Access:      All authenticated users
+Description: Get single task details (company & assignment restricted)
+
+Headers:
+Authorization: Bearer <user_token>
+
+URL Parameters:
+:id - Task ObjectId
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439017",
+  "title": "Complete Q1 Report",
+  "description": "Prepare quarterly financial report with all metrics",
+  "assignedTo": {
+    "_id": "507f1f77bcf86cd799439012",
+    "name": "Jane Smith",
+    "empCode": "ACJA20260002",
+    "department": "Finance"
+  },
+  "assignedBy": {
+    "_id": "507f1f77bcf86cd799439011",
+    "name": "John Doe"
+  },
+  "priority": "High",
+  "status": "In Progress",
+  "dueDate": "2026-01-15T00:00:00.000Z",
+  "comments": [
+    {
+      "user": {
+        "_id": "507f1f77bcf86cd799439012",
+        "name": "Jane Smith"
+      },
+      "text": "Started working on this, will complete by deadline",
+      "createdAt": "2026-01-04T09:00:00.000Z"
+    }
+  ],
+  "attachments": [],
+  "createdAt": "2026-01-03T10:00:00.000Z"
+}
+
+Error Response (403):
+{
+  "message": "Not authorized to view this task"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+7.5 UPDATE TASK
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    PUT /api/tasks/:id
+Access:      Admin (full update), Employee (status only)
+Description: Update task details or status
+
+Headers:
+Authorization: Bearer <user_token>
+
+URL Parameters:
+:id - Task ObjectId
+
+Request Body (Admin):
+{
+  "title": "Updated Title",
+  "description": "Updated description",
+  "priority": "Urgent",
+  "dueDate": "2026-01-20",
+  "status": "In Progress",
+  "assignedTo": "507f1f77bcf86cd799439013"  // Reassign to different employee
+}
+
+Request Body (Employee):
+{
+  "status": "Completed"                      // Pending, In Progress, Completed
+}
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439017",
+  "title": "Updated Title",
+  "status": "Completed",
+  "completedAt": "2026-01-10T14:30:00.000Z", // Auto-set when status=Completed
+  // ... rest of fields
+}
+
+Authorization Rules:
+- Admin/HR: Can update all fields including reassignment
+- Employee: Can only update status of their assigned tasks
+- Company verification enforced
+
+Error Response (403):
+{
+  "message": "Not authorized to update this task"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+7.6 DELETE TASK (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    DELETE /api/tasks/:id
+Access:      Admin, HR
+Description: Permanently delete task
+
+Headers:
+Authorization: Bearer <admin_token>
+
+URL Parameters:
+:id - Task ObjectId
+
+Success Response (200):
+{
+  "message": "Task deleted successfully"
+}
+
+Error Response (403):
+{
+  "message": "Not authorized to delete this task"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+7.7 ADD COMMENT TO TASK
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    POST /api/tasks/:id/comment
+Access:      Task participants (assignee, assigner, admin)
+Description: Add comment to task thread
+
+Headers:
+Authorization: Bearer <user_token>
+
+URL Parameters:
+:id - Task ObjectId
+
+Request Body:
+{
+  "text": "Started working on this task, will update progress daily"
+}
+
+Authorization:
+- Task assignee can comment
+- Task assigner can comment
+- Admin/HR can comment on any company task
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439017",
+  "title": "Complete Q1 Report",
+  // ... other fields
+  "comments": [
+    {
+      "user": {
+        "_id": "507f1f77bcf86cd799439012",
+        "name": "Jane Smith"
+      },
+      "text": "Started working on this task, will update progress daily",
+      "createdAt": "2026-01-05T09:00:00.000Z"
+    }
+  ]
+}
+
+Error Response (403):
+{
+  "message": "Not authorized to comment on this task"
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+8. AI CHATBOT API
 ═══════════════════════════════════════════════════════════════════════════════
 
 ────────────────────────────────────────────────────────────────────────────────
@@ -906,7 +1193,234 @@ Error Response (500):
 }
 
 ═══════════════════════════════════════════════════════════════════════════════
-8. ERROR CODES & RESPONSES
+9. SUPERADMIN API
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️ IMPORTANT: All SuperAdmin routes require role='SuperAdmin' authentication
+SuperAdmin has cross-company access to ALL data in the system.
+
+────────────────────────────────────────────────────────────────────────────────
+9.1 GET SYSTEM STATISTICS
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/superadmin/stats
+Access:      SuperAdmin only
+Description: Get global platform statistics
+
+Headers:
+Authorization: Bearer <superadmin_token>
+
+Success Response (200):
+{
+  "overview": {
+    "totalCompanies": 15,
+    "totalUsers": 450,
+    "totalAdmins": 20,
+    "totalEmployees": 420,
+    "totalAttendance": 12500,
+    "totalLeaves": 850,
+    "totalTasks": 320,
+    "totalAnnouncements": 45
+  },
+  "recentUsers": [
+    {
+      "_id": "507f1f77bcf86cd799439020",
+      "name": "New User",
+      "email": "newuser@company.com",
+      "companyName": "Tech Corp",
+      "role": "Employee",
+      "createdAt": "2026-01-03T15:00:00.000Z"
+    }
+    // ... up to 10 most recent users
+  ]
+}
+
+────────────────────────────────────────────────────────────────────────────────
+9.2 GET ALL COMPANIES
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/superadmin/companies
+Access:      SuperAdmin only
+Description: List all registered companies with user counts
+
+Headers:
+Authorization: Bearer <superadmin_token>
+
+Success Response (200):
+[
+  {
+    "companyName": "Acme Corporation",
+    "adminCount": 2,
+    "hrCount": 1,
+    "employeeCount": 45,
+    "totalUsers": 48
+  },
+  {
+    "companyName": "Tech Innovations",
+    "adminCount": 1,
+    "hrCount": 0,
+    "employeeCount": 30,
+    "totalUsers": 31
+  }
+]
+
+────────────────────────────────────────────────────────────────────────────────
+9.3 GET COMPANY DETAILS
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/superadmin/companies/:companyName
+Access:      SuperAdmin only
+Description: Get detailed information about specific company
+
+Headers:
+Authorization: Bearer <superadmin_token>
+
+URL Parameters:
+:companyName - Company name (URL encoded)
+
+Success Response (200):
+{
+  "companyName": "Acme Corporation",
+  "users": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "name": "John Doe",
+      "email": "admin@acme.com",
+      "role": "Admin",
+      "empCode": "ACJO20260001",
+      "department": "Management",
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    // ... all company users
+  ],
+  "stats": {
+    "totalUsers": 48,
+    "attendanceRecords": 1200,
+    "leaves": {
+      "pending": 5,
+      "approved": 120,
+      "rejected": 10
+    },
+    "tasks": {
+      "pending": 15,
+      "inprogress": 8,
+      "completed": 45,
+      "cancelled": 2
+    },
+    "activeAnnouncements": 3
+  }
+}
+
+Error Response (404):
+{
+  "message": "Company not found"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+9.4 GET ALL ADMINS
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/superadmin/admins
+Access:      SuperAdmin only
+Description: List all Admin and HR users across all companies
+
+Headers:
+Authorization: Bearer <superadmin_token>
+
+Success Response (200):
+[
+  {
+    "_id": "507f1f77bcf86cd799439011",
+    "name": "John Doe",
+    "email": "admin@acme.com",
+    "role": "Admin",
+    "companyName": "Acme Corporation",
+    "empCode": "ACJO20260001",
+    "phone": "9876543210",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "_id": "507f1f77bcf86cd799439025",
+    "name": "Sarah Manager",
+    "email": "hr@techcorp.com",
+    "role": "HR",
+    "companyName": "Tech Innovations",
+    "empCode": "TESA20260001",
+    "createdAt": "2026-01-02T00:00:00.000Z"
+  }
+]
+
+────────────────────────────────────────────────────────────────────────────────
+9.5 UPDATE ANY USER (CROSS-COMPANY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    PUT /api/superadmin/users/:id
+Access:      SuperAdmin only
+Description: Update any user across any company (including role changes)
+
+Headers:
+Authorization: Bearer <superadmin_token>
+
+URL Parameters:
+:id - User MongoDB ObjectId
+
+Request Body (All fields optional):
+{
+  "name": "Updated Name",
+  "email": "newemail@company.com",
+  "role": "Admin",                    // Can promote/demote roles
+  "companyName": "Different Company", // Can move users between companies
+  "designation": "Senior Manager",
+  "department": "Operations",
+  "salary": {
+    "monthly": 150000
+  },
+  "dateOfJoining": "2025-12-01"
+}
+
+⚠️ WARNING: SuperAdmin can change ANY field including:
+- Roles (Employee → Admin or vice versa)
+- Company transfers
+- Critical data modifications
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439012",
+  "name": "Updated Name",
+  "email": "newemail@company.com",
+  "role": "Admin",
+  "companyName": "Different Company"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+9.6 DELETE COMPANY (DANGEROUS OPERATION)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    DELETE /api/superadmin/companies/:companyName
+Access:      SuperAdmin only
+Description: Permanently delete company and ALL associated data
+
+Headers:
+Authorization: Bearer <superadmin_token>
+
+URL Parameters:
+:companyName - Company name to delete (URL encoded)
+
+⚠️ CRITICAL WARNING: This operation:
+- Deletes all users in the company
+- Deletes all attendance records
+- Deletes all leave requests
+- Deletes all tasks
+- Deletes all announcements
+- CANNOT BE UNDONE
+
+Success Response (200):
+{
+  "message": "Company \"Acme Corporation\" and all associated data deleted successfully",
+  "deletedUsers": 48
+}
+
+Error Response (404):
+{
+  "message": "Company not found"
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+10. ERROR CODES & RESPONSES
 ═══════════════════════════════════════════════════════════════════════════════
 
 HTTP Status Codes:
@@ -1082,7 +1596,130 @@ curl -X PUT http://localhost:5000/api/leaves/507f1f77bcf86cd799439015 \
 }
 
 ═══════════════════════════════════════════════════════════════════════════════
-10. SECURITY BEST PRACTICES
+12. REAL-TIME UPDATES
+═══════════════════════════════════════════════════════════════════════════════
+
+Current Implementation:
+────────────────────────────────────────────────────────────────────────────────
+The system currently uses traditional REST API architecture with client-side
+polling for updates. Data is refreshed when:
+- Page loads/reloads
+- User navigates between routes
+- Manual refresh action
+
+Real-time Update Strategies (Future Enhancement):
+────────────────────────────────────────────────────────────────────────────────
+
+Option 1: WebSocket Implementation (Socket.io)
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROS:                                                                        │
+│ - True real-time bidirectional communication                                │
+│ - Low latency updates (< 100ms)                                             │
+│ - Efficient for high-frequency updates                                      │
+│                                                                              │
+│ CONS:                                                                        │
+│ - More complex server architecture                                          │
+│ - Requires persistent connections                                           │
+│ - May need load balancer with sticky sessions                               │
+│                                                                              │
+│ IMPLEMENTATION:                                                              │
+│ 1. npm install socket.io socket.io-client                                   │
+│ 2. Create WebSocket server in backend/server.js                             │
+│ 3. Emit events on data changes (CRUD operations)                            │
+│ 4. Listen to events in frontend components                                  │
+│                                                                              │
+│ EVENTS TO IMPLEMENT:                                                         │
+│ - user:updated                                                               │
+│ - employee:created                                                           │
+│ - task:assigned                                                              │
+│ - task:updated                                                               │
+│ - leave:approved                                                             │
+│ - announcement:created                                                       │
+│ - attendance:checkin                                                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Option 2: Server-Sent Events (SSE)
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROS:                                                                        │
+│ - Simple implementation                                                      │
+│ - Built into HTTP protocol                                                  │
+│ - Automatic reconnection                                                     │
+│ - Works well with existing REST API                                         │
+│                                                                              │
+│ CONS:                                                                        │
+│ - One-way communication (server → client only)                              │
+│ - Limited browser connection pool                                           │
+│                                                                              │
+│ USE CASES:                                                                   │
+│ - Live notifications                                                         │
+│ - Dashboard metrics updates                                                 │
+│ - Task status changes                                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Option 3: Short Polling (Quick Win)
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROS:                                                                        │
+│ - Easy to implement (no architecture changes)                               │
+│ - Works with existing REST API                                              │
+│ - No special infrastructure needed                                          │
+│                                                                              │
+│ CONS:                                                                        │
+│ - Not true real-time                                                        │
+│ - Increased server load                                                     │
+│ - Higher latency (depends on polling interval)                              │
+│                                                                              │
+│ IMPLEMENTATION:                                                              │
+│ // Admin Employees Page                                                     │
+│ useEffect(() => {                                                            │
+│   const interval = setInterval(() => {                                      │
+│     fetchEmployees(); // Refresh every 10 seconds                           │
+│   }, 10000);                                                                 │
+│   return () => clearInterval(interval);                                     │
+│ }, []);                                                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Recommended Approach for This Project:
+────────────────────────────────────────────────────────────────────────────────
+SHORT POLLING (Option 3) for immediate implementation:
+- Add 10-second polling to Admin Employees page
+- Add 30-second polling to Dashboard for announcements
+- Add 15-second polling to Tasks page
+
+WEBSOCKET (Option 1) for production-grade solution:
+- Implement when scaling beyond 100 concurrent users
+- Use for task assignments, leave approvals, announcements
+- Implement room-based isolation (one room per company)
+
+Example WebSocket Implementation:
+────────────────────────────────────────────────────────────────────────────────
+// Backend (server.js)
+const io = require('socket.io')(server, {
+  cors: { origin: process.env.FRONTEND_URL }
+});
+
+io.on('connection', (socket) => {
+  socket.on('join-company', (companyName) => {
+    socket.join(companyName);
+  });
+});
+
+// In controllers (e.g., userController.js)
+const io = require('../server').io;
+io.to(user.companyName).emit('employee:updated', updatedUser);
+
+// Frontend (Dashboard.jsx)
+import io from 'socket.io-client';
+const socket = io('http://localhost:5000');
+
+socket.emit('join-company', user.companyName);
+socket.on('employee:updated', (employee) => {
+  setEmployees(prev => prev.map(e => 
+    e._id === employee._id ? employee : e
+  ));
+});
+
+═══════════════════════════════════════════════════════════════════════════════
+13. SECURITY BEST PRACTICES
 ═══════════════════════════════════════════════════════════════════════════════
 
 Token Management:

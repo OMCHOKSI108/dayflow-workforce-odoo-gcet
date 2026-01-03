@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, User, Calendar, DollarSign, LogOut, Briefcase, Users, PieChart, ChevronDown, CheckCircle } from 'lucide-react';
+import { Home, User, Calendar, DollarSign, LogOut, Briefcase, Users, PieChart, ChevronDown, CheckCircle, CheckSquare } from 'lucide-react';
 import { useContext, useState, useEffect, useRef } from 'react';
 import AuthContext from '../context/AuthContext';
 import axios from 'axios';
@@ -17,9 +17,10 @@ const Sidebar = () => {
 
     const links = [
         { path: '/dashboard', label: 'Overview', icon: PieChart },
-        { path: '/employees', label: 'Employees', icon: Users },
+        { path: '/employees', label: 'Employees', icon: Users, adminOnly: true },
         { path: '/attendance', label: 'Attendance', icon: Calendar },
         { path: '/leaves', label: 'Time Off', icon: Briefcase },
+        { path: '/tasks', label: 'Tasks', icon: CheckSquare },
         { path: '/profile', label: 'Me', icon: User },
     ];
 
@@ -59,7 +60,9 @@ const Sidebar = () => {
 
             {/* Navigation Links - Center */}
             <nav style={{ display: 'flex', gap: '0.5rem', flex: 1, justifyContent: 'center', paddingLeft: '2rem' }}>
-                {links.map((link) => (
+                {links
+                    .filter(link => !link.adminOnly || (user.role === 'Admin' || user.role === 'HR'))
+                    .map((link) => (
                     <Link
                         key={link.path}
                         to={link.path}

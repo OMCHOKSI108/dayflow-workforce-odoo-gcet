@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import Employees from './pages/Employees';
 import Attendance from './pages/Attendance';
 import Leaves from './pages/Leaves';
+import Tasks from './pages/Tasks';
 import Chatbot from './components/Chatbot';
 
 const ProtectedRoute = ({ children }) => {
@@ -54,6 +55,7 @@ function App() {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
           <Route path="/leaves" element={<ProtectedRoute><Leaves /></ProtectedRoute>} />
+          <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
           <Route path="/payroll" element={<ProtectedRoute><div className="card"><h1>Payroll</h1><p>Coming Soon...</p></div></ProtectedRoute>} />
         </Routes>
       </Router>

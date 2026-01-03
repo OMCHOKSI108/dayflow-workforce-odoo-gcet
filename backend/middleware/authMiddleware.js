@@ -35,4 +35,12 @@ const admin = (req, res, next) => {
     }
 };
 
-module.exports = { protect, admin };
+const superAdmin = (req, res, next) => {
+    if (req.user && req.user.role === 'SuperAdmin') {
+        next();
+    } else {
+        res.status(401).json({ message: 'Not authorized as SuperAdmin' });
+    }
+};
+
+module.exports = { protect, admin, adminOnly: admin, superAdmin };
