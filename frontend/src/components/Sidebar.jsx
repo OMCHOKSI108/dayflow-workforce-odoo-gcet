@@ -48,17 +48,43 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="navbar" style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+        <div className="navbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'nowrap', gap: '1rem' }}>
             {/* Brand */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <div style={{ background: 'white', borderRadius: '6px', padding: '4px', display: 'flex', alignItems: 'center' }}>
                     <img src="/logo.png" alt="Dayflow" style={{ height: '24px', width: '24px', objectFit: 'contain' }} />
                 </div>
                 <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'white', letterSpacing: '0.5px' }}>Dayflow</span>
             </div>
 
+            {/* Navigation Links - Center */}
+            <nav style={{ display: 'flex', gap: '0.5rem', flex: 1, justifyContent: 'center', paddingLeft: '2rem' }}>
+                {links.map((link) => (
+                    <Link
+                        key={link.path}
+                        to={link.path}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '4px',
+                            backgroundColor: isActive(link.path) ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                            color: 'white',
+                            fontSize: '0.9rem',
+                            fontWeight: isActive(link.path) ? '600' : '400',
+                            transition: 'all 0.15s ease',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <link.icon size={16} />
+                        {link.label}
+                    </Link>
+                ))}
+            </nav>
+
             {/* Right Side Widgets (User & Attendance) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: 'auto', order: 2 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
 
                 {/* Attendance Status Widget */}
                 <div style={{ position: 'relative' }}>
@@ -152,32 +178,6 @@ const Sidebar = () => {
                     </AnimatePresence>
                 </div>
             </div>
-
-            {/* Navigation Links - Order 3 moves it to bottom on wrap */}
-            <nav style={{ display: 'flex', gap: '0.5rem', marginLeft: 'auto', marginRight: 'auto', marginTop: '0', order: 3, width: '100%', overflowX: 'auto', paddingBottom: '4px' }} className="responsive-nav">
-                {links.map((link) => (
-                    <Link
-                        key={link.path}
-                        to={link.path}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            padding: '0.4rem 0.8rem',
-                            borderRadius: '4px',
-                            backgroundColor: isActive(link.path) ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
-                            color: 'white',
-                            fontSize: '0.9rem',
-                            fontWeight: isActive(link.path) ? '600' : '400',
-                            transition: 'all 0.15s ease',
-                            whiteSpace: 'nowrap' // Prevent text wrapping in horizontal scroll
-                        }}
-                    >
-                        <link.icon size={16} />
-                        {link.label}
-                    </Link>
-                ))}
-            </nav>
         </div>
     );
 };

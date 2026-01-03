@@ -48,8 +48,52 @@ const getMyAttendance = async (req, res) => {
 // @desc Get all attendance (Admin)
 // @route GET /api/attendance
 const getAllAttendance = async (req, res) => {
-    const attendance = await Attendance.find({}).populate('user', 'name email');
+    const adminUser = await require('../models/User').findById(req.user._id);
+    const companyUsers = await require('../models/User').find({ companyName: adminUser.companyName }).select('_id');
+    const userIds = companyUsers.map(u => u._id);
+    
+    const attendance = await Attendance.find({ user: { $in: userIds } }).populate('user', 'name email');
     res.json(attendance);
 };
 
-module.exports = { checkIn, checkOut, getMyAttendance, getAllAttendance };
+// @desc Update attendance record (Admin)
+// @route PUT /api/attendance/:id
+const updateAttendance = async (req, res) => {
+    const attendance = await Attendance.findById(req.params.id).populate('user');
+    if (!attendance) {
+        return res.status(404).json({ message: 'Attendance not found' });
+    }
+    
+    // Verify attendance belongs to admin's company
+    const adminUser = await require('../models/User').findById(req.user._id);
+    if (attendance.user.companyName !== adminUser.companyName) {
+        return res.status(403).json({ message: 'Not authorized to update this attendance' });
+    }
+    
+    attendance.checkIn = req.body.checkIn || attendance.checkIn;
+    attendance.checkOut = req.body.checkOut || attendance.checkOut;
+    attendance.status = req.body.status || attendance.status;
+    
+    const updated = await attendance.save();
+    res.json(updated);
+};
+
+// @desc Delete attendance record (Admin)
+// @route DELETE /api/attendance/:id
+const deleteAttendance = async (req, res) => {
+    const attendance = await Attendance.findById(req.params.id).populate('user');
+    if (!attendance) {
+        return res.status(404).json({ message: 'Attendance not found' });
+    }
+    
+    // Verify attendance belongs to admin's company
+    const adminUser = await require('../models/User').findById(req.user._id);
+    if (attendance.user.companyName !== adminUser.companyName) {
+        return res.status(403).json({ message: 'Not authorized to delete this attendance' });
+    }
+    
+    await attendance.deleteOne();
+    res.json({ message: 'Attendance record deleted' });
+};
+
+module.exports = { checkIn, checkOut, getMyAttendance, getAllAttendance, updateAttendance, deleteAttendance };

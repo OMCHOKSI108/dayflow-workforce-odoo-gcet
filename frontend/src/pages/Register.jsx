@@ -21,6 +21,35 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        
+        // Validation
+        if (!formData.companyName || formData.companyName.trim().length < 2) {
+            setError('Company name must be at least 2 characters');
+            return;
+        }
+        
+        if (!formData.name || formData.name.trim().length < 2) {
+            setError('Name must be at least 2 characters');
+            return;
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setError('Please enter a valid email address');
+            return;
+        }
+        
+        if (formData.phone && formData.phone.length < 10) {
+            setError('Phone number must be at least 10 digits');
+            return;
+        }
+        
+        if (formData.password.length < 6) {
+            setError('Password must be at least 6 characters');
+            return;
+        }
+        
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
             return;
@@ -29,10 +58,10 @@ const Register = () => {
         try {
             // Register
             await axios.post('http://localhost:5000/api/users', {
-                name: formData.name,
-                email: formData.email,
+                name: formData.name.trim(),
+                email: formData.email.toLowerCase().trim(),
                 password: formData.password,
-                companyName: formData.companyName,
+                companyName: formData.companyName.trim(),
                 phone: formData.phone
             });
 
@@ -68,9 +97,11 @@ const Register = () => {
                             <input
                                 type="text"
                                 className="form-input"
+                                placeholder="e.g. Acme Corporation"
                                 value={formData.companyName}
                                 onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                                 required
+                                minLength={2}
                             />
                             <button type="button" className="btn btn-secondary" style={{ padding: '0.5rem' }}>
                                 <Upload size={18} />
@@ -83,9 +114,11 @@ const Register = () => {
                         <input
                             type="text"
                             className="form-input"
+                            placeholder="e.g. John Doe"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             required
+                            minLength={2}
                         />
                     </div>
 
@@ -94,6 +127,7 @@ const Register = () => {
                         <input
                             type="email"
                             className="form-input"
+                            placeholder="admin@company.com"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             required
@@ -105,9 +139,10 @@ const Register = () => {
                         <input
                             type="tel"
                             className="form-input"
+                            placeholder="10-digit mobile number"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            required
+                            minLength={10}
                         />
                     </div>
 
@@ -117,9 +152,11 @@ const Register = () => {
                             <input
                                 type="password"
                                 className="form-input"
+                                placeholder="Min. 6 characters"
                                 value={formData.password}
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                 required
+                                minLength={6}
                             />
                         </div>
                         <div className="form-group">
@@ -127,9 +164,11 @@ const Register = () => {
                             <input
                                 type="password"
                                 className="form-input"
+                                placeholder="Re-enter password"
                                 value={formData.confirmPassword}
                                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                 required
+                                minLength={6}
                             />
                         </div>
                     </div>

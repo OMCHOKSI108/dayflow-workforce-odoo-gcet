@@ -71,21 +71,52 @@ const authUser = async (req, res) => {
 // @desc Register a new Organization/Admin
 // @route POST /api/users
 const registerUser = async (req, res) => {
-    const { name, email, password, companyName } = req.body;
+    const { name, email, password, companyName, phone } = req.body;
+    
+    // Validation
+    if (!name || !email || !password || !companyName) {
+        return res.status(400).json({ message: 'Please provide all required fields' });
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Invalid email format' });
+    }
+    
+    // Password validation - minimum 6 characters
+    if (password.length < 6) {
+        return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+    
+    // Name validation - minimum 2 characters
+    if (name.trim().length < 2) {
+        return res.status(400).json({ message: 'Name must be at least 2 characters' });
+    }
+    
+    // Company name validation
+    if (companyName.trim().length < 2) {
+        return res.status(400).json({ message: 'Company name must be at least 2 characters' });
+    }
+    
+    // Phone validation if provided
+    if (phone && phone.length < 10) {
+        return res.status(400).json({ message: 'Phone number must be at least 10 digits' });
+    }
+    
     const userExists = await User.findOne({ email });
-
     if (userExists) {
-        res.status(400).json({ message: 'User already exists' });
-        return;
+        return res.status(400).json({ message: 'User already exists' });
     }
 
     const user = await User.create({
-        name,
-        email,
+        name: name.trim(),
+        email: email.toLowerCase().trim(),
         password,
-        companyName,
+        companyName: companyName.trim(),
+        phone: phone || '',
         role: 'Admin', // First user is Admin
-        empCode: await generateEmpCode(companyName, name)
+        empCode: await generateEmpCode(companyName.trim(), name.trim())
     });
 
     if (user) {
@@ -94,6 +125,7 @@ const registerUser = async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            empCode: user.empCode,
             token: generateToken(user._id),
         });
     } else {
@@ -141,7 +173,8 @@ const createEmployee = async (req, res) => {
 // @desc Get all users
 // @route GET /api/users
 const getUsers = async (req, res) => {
-    const users = await User.find({});
+    const adminUser = await User.findById(req.user._id);
+    const users = await User.find({ companyName: adminUser.companyName });
     res.json(users);
 };
 
@@ -195,49 +228,101 @@ const updateUserProfile = async (req, res) => {
 // @route GET /api/users/:id
 const getUserById = async (req, res) => {
     const user = await User.findById(req.params.id);
-    if (user) {
-        res.json(user);
-    } else {
-        res.status(404).json({ message: 'User not found' });
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
     }
+    
+    // Verify user belongs to admin's company
+    const adminUser = await User.findById(req.user._id);
+    if (user.companyName !== adminUser.companyName) {
+        return res.status(403).json({ message: 'Not authorized to view this user' });
+    }
+    
+    res.json(user);
 };
 
 // @desc Update user (Admin)
 // @route PUT /api/users/:id
 const updateUser = async (req, res) => {
     const user = await User.findById(req.params.id);
-
-    if (user) {
-        user.name = req.body.name || user.name;
-        user.email = req.body.email || user.email;
-        user.phone = req.body.phone || user.phone;
-        user.role = req.body.role || user.role;
-        user.department = req.body.department || user.department;
-        user.designation = req.body.designation || user.designation;
-        user.address = req.body.address || user.address;
-        user.residingAddress = req.body.residingAddress || user.residingAddress;
-        user.gender = req.body.gender || user.gender;
-        user.nationality = req.body.nationality || user.nationality;
-        user.personalEmail = req.body.personalEmail || user.personalEmail;
-        user.maritalStatus = req.body.maritalStatus || user.maritalStatus;
-        user.dateOfJoining = req.body.dateOfJoining || user.dateOfJoining;
-
-        // Salary Info (Admin Only)
-        if (req.body.salary) {
-            user.salary = req.body.salary;
-        }
-
-        const updatedUser = await user.save();
-
-        res.json({
-            _id: updatedUser._id,
-            name: updatedUser.name,
-            email: updatedUser.email,
-            role: updatedUser.role,
-        });
-    } else {
-        res.status(404).json({ message: 'User not found' });
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
     }
+    
+    // Verify user belongs to admin's company
+    const adminUser = await User.findById(req.user._id);
+    if (user.companyName !== adminUser.companyName) {
+        return res.status(403).json({ message: 'Not authorized to update this user' });
+    }
+    
+    // Prevent role escalation - only original admin can change roles
+    if (req.body.role && req.body.role !== user.role) {
+        if (adminUser.role !== 'Admin' || req.user._id.toString() === user._id.toString()) {
+            return res.status(403).json({ message: 'Not authorized to change roles' });
+        }
+    }
+    
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.phone = req.body.phone || user.phone;
+    user.department = req.body.department || user.department;
+    user.designation = req.body.designation || user.designation;
+    user.address = req.body.address || user.address;
+    user.residingAddress = req.body.residingAddress || user.residingAddress;
+    user.gender = req.body.gender || user.gender;
+    user.nationality = req.body.nationality || user.nationality;
+    user.personalEmail = req.body.personalEmail || user.personalEmail;
+    user.maritalStatus = req.body.maritalStatus || user.maritalStatus;
+    user.dateOfJoining = req.body.dateOfJoining || user.dateOfJoining;
+    user.dob = req.body.dob || user.dob;
+    user.image = req.body.image || user.image;
+    
+    // Bank details
+    if (req.body.bankDetails) {
+        user.bankDetails = req.body.bankDetails;
+    }
+
+    // Salary Info (Admin Only)
+    if (req.body.salary) {
+        user.salary = req.body.salary;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+    });
+};
+
+// @desc Delete user (Soft delete - set inactive)
+// @route DELETE /api/users/:id
+const deleteUser = async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Verify user belongs to admin's company
+    const adminUser = await User.findById(req.user._id);
+    if (user.companyName !== adminUser.companyName) {
+        return res.status(403).json({ message: 'Not authorized to delete this user' });
+    }
+    
+    // Prevent deleting yourself
+    if (user._id.toString() === req.user._id.toString()) {
+        return res.status(400).json({ message: 'Cannot delete yourself' });
+    }
+    
+    // Prevent deleting other admins
+    if (user.role === 'Admin') {
+        return res.status(400).json({ message: 'Cannot delete admin users' });
+    }
+    
+    await user.deleteOne();
+    res.json({ message: 'User deleted successfully' });
 };
 
 // @desc Get Dashboard Stats
@@ -250,26 +335,49 @@ const getDashboardStats = async (req, res) => {
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
     try {
+        // Get current user's company
+        const currentUser = await User.findById(req.user._id);
+        
         // 1. Attendance Count (Current Month)
         const attendanceCount = await Attendance.countDocuments({
             user: req.user._id,
-            date: { $gte: firstDay }
+            date: { $gte: firstDay.toISOString().split('T')[0] },
+            status: 'Present'
         });
 
-        // 2. Leave Balance (Mock Total 24 - Used)
-        const leavesTaken = await Leave.countDocuments({
-            user: req.user._id,
-            status: 'Approved'
-        });
-        const leaveBalance = 24 - leavesTaken;
+        // 2. Leave Balance (Only show if user has joined date)
+        let leaveBalance = 0;
+        if (currentUser.dateOfJoining) {
+            // Calculate months since joining
+            const joinDate = new Date(currentUser.dateOfJoining);
+            const monthsSinceJoining = Math.floor((today - joinDate) / (1000 * 60 * 60 * 24 * 30));
+            
+            if (monthsSinceJoining >= 0) {
+                // Allocate 2 leaves per month (24 per year)
+                const allocatedLeaves = Math.min(monthsSinceJoining * 2, 24);
+                
+                const leavesTaken = await Leave.countDocuments({
+                    user: req.user._id,
+                    status: 'Approved'
+                });
+                
+                leaveBalance = Math.max(0, allocatedLeaves - leavesTaken);
+            }
+        }
 
         // 3. Pending Actions (Pending Leaves)
         const pendingLeaves = await Leave.countDocuments({
             user: req.user._id,
             status: 'Pending'
         });
+        
+        // 4. Total Employees in company
+        const totalEmployees = await User.countDocuments({
+            companyName: currentUser.companyName,
+            role: { $ne: 'Admin' }
+        });
 
-        // 4. Recent Activity (Last 3 items)
+        // 5. Recent Activity (Last 5 items)
         const recentAttendance = await Attendance.find({ user: req.user._id }).sort({ date: -1 }).limit(2).lean();
         const recentLeaves = await Leave.find({ user: req.user._id }).sort({ createdAt: -1 }).limit(2).lean();
 
@@ -297,6 +405,7 @@ const getDashboardStats = async (req, res) => {
             attendanceCount,
             leaveBalance,
             pendingTasks: pendingLeaves,
+            totalEmployees,
             activity
         });
 
@@ -305,4 +414,4 @@ const getDashboardStats = async (req, res) => {
     }
 };
 
-module.exports = { authUser, registerUser, createEmployee, getUsers, getUserProfile, updateUserProfile, getUserById, updateUser, getDashboardStats };
+module.exports = { authUser, registerUser, createEmployee, getUsers, getUserProfile, updateUserProfile, getUserById, updateUser, deleteUser, getDashboardStats };

@@ -17,8 +17,11 @@ const getContext = async (userId) => {
         const user = await User.findById(userId).select('-password');
         if (!user) return null;
 
-        // 2. Get Employee Count
-        const totalEmployees = await User.countDocuments({ role: 'Employee' });
+        // 2. Get Employee Count (Company-specific)
+        const totalEmployees = await User.countDocuments({ 
+            role: 'Employee',
+            companyName: user.companyName 
+        });
 
         // 3. Get Attendance Status
         const today = new Date().toISOString().split('T')[0];

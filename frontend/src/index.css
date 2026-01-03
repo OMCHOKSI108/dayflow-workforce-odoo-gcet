@@ -36,6 +36,8 @@
 }
 
 body {
+  margin: 0;
+  padding: 0;
   font-family: var(--font-main);
   background-color: var(--background-color);
   color: var(--text-primary);
@@ -44,10 +46,23 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+}
+
+/* Layout with detailed side borders */
+/* Layout with detailed side borders */
 /* Layout with detailed side borders */
 .layout {
   display: flex;
   min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   flex-direction: column;
   /* Grid Calligraphy Border Effect */
   background-image:
@@ -56,8 +71,7 @@ body {
   background-position: 20px 0, calc(100% - 20px) 0;
   background-size: 1px 100%;
   background-repeat: no-repeat;
-  padding: 0 40px;
-  /* Space inside the borders */
+  /* Removed global padding to allow Navbar to be full-width */
 }
 
 a {
@@ -90,7 +104,8 @@ button {
 
 .main-content {
   flex: 1;
-  padding: 2rem;
+  padding: 2rem 40px;
+  /* Moved padding here to align with grid lines */
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
@@ -204,12 +219,12 @@ button {
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .layout {
-    padding: 0 10px;
     background-position: 5px 0, calc(100% - 5px) 0;
   }
 
   .main-content {
-    padding: 1rem;
+    padding: 1rem 15px;
+    /* Reduced padding for mobile */
     width: 100%;
     margin-top: 0;
   }

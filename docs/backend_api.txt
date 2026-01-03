@@ -1,93 +1,1144 @@
-Dayflow SaaS API Documentation
-Version: 1.0.0
-Base URL: http://localhost:5000/api
+═══════════════════════════════════════════════════════════════════════════════
+                    DAYFLOW HRMS - COMPLETE API DOCUMENTATION
+                              Version: 2.0.0
+                         Last Updated: January 3, 2026
+═══════════════════════════════════════════════════════════════════════════════
 
-Authentication:
-All protected routes require a Bearer Token in the Authorization header.
-Header: Authorization: Bearer <token>
+TABLE OF CONTENTS
+─────────────────
+1. Overview
+2. Authentication
+3. User Management API
+4. Attendance API
+5. Leave Management API
+6. Announcement API
+7. AI Chatbot API
+8. Error Codes
+9. Request/Response Examples
+10. Security Best Practices
 
---------------------------------------------------------------------------------
-1. AUTHENTICATION & USERS
---------------------------------------------------------------------------------
+═══════════════════════════════════════════════════════════════════════════════
+1. OVERVIEW
+═══════════════════════════════════════════════════════════════════════════════
 
-POST /api/users/login
-Description: Authenticate user and get JWT token.
-Body: { "email": "admin@dayflow.com", "password": "password123" } 
-      OR { "empCode": "dayflowadmin", "password": "password123" }
-Response: { "_id", "name", "email", "empCode", "role", "token" }
+Base URL (Development):  http://localhost:5000/api
+Base URL (Production):   https://your-domain.com/api
 
-POST /api/users
-Description: Register a new Organization (Admin only initial setup or Public for SaaS).
-Body: { "name": "Om Doe", "email": "Om@co.com", "password": "123", "companyName": "Acme Inc", "phone": "999" }
-Response: { "_id", "name", "email", "role", "token" }
+Content-Type:            application/json
+Authentication:          Bearer Token (JWT)
+Token Validity:          30 days
+API Version:             v1
 
-POST /api/users/create (Admin Only)
-Description: Create a new employee under the logged-in admin's organization.
-Body: { "name": "Jane Doe", "email": "jane@co.com", "designation": "Dev", "salary": { "monthly": 50000 } }
-Response: { "message": "User created", "empCode": "...", "tempPassword": "..." }
+═══════════════════════════════════════════════════════════════════════════════
+2. AUTHENTICATION
+═══════════════════════════════════════════════════════════════════════════════
 
-GET /api/users (Admin Only)
-Description: Get all employees.
-Response: Array of user objects.
+All protected routes require the following header:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Authorization: Bearer <your_jwt_token>                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
 
-GET /api/users/profile
-Description: Get current logged-in user's profile.
-Response: User object with private fields.
+────────────────────────────────────────────────────────────────────────────────
+2.1 LOGIN
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    POST /api/users/login
+Access:      Public
+Description: Authenticate user and receive JWT token
 
-PUT /api/users/profile
-Description: Update current user's profile.
-Body: { "phone", "address", "gender", ... }
-Response: Updated User object.
+Request Body:
+{
+  "email": "admin@company.com",    // Email or Employee Code
+  "password": "password123"
+}
 
-GET /api/users/:id (Admin Only)
-Description: Get a specific user by ID.
-Response: User object.
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "name": "John Doe",
+  "email": "admin@company.com",
+  "empCode": "DAOM20260001",
+  "role": "Admin",
+  "image": "base64_or_url",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
 
-PUT /api/users/:id (Admin Only)
-Description: Update a specific user (including salary/role).
-Body: { "salary": { "monthly": 60000 }, "designation": "Senior Dev" }
-Response: Updated User object.
+Error Response (401):
+{
+  "message": "Invalid credentials"
+}
 
---------------------------------------------------------------------------------
-2. ATTENDANCE
---------------------------------------------------------------------------------
+────────────────────────────────────────────────────────────────────────────────
+2.2 REGISTER ORGANIZATION
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    POST /api/users
+Access:      Public
+Description: Register new organization (First user becomes Admin)
 
-POST /api/attendance/checkin
-Description: Clock in for the day.
-Body: {}
-Response: { "message": "Checked in successfully" }
+Request Body:
+{
+  "name": "John Doe",
+  "email": "admin@company.com",
+  "password": "password123",
+  "companyName": "Acme Corporation",
+  "phone": "9876543210"            // Optional, min 10 digits
+}
 
-POST /api/attendance/checkout
-Description: Clock out for the day.
-Body: {}
-Response: { "message": "Checked out successfully" }
+Validation Rules:
+- Name: Min 2 characters
+- Email: Valid email format
+- Password: Min 6 characters
+- Company Name: Min 2 characters
+- Phone: Min 10 digits (optional)
 
-GET /api/attendance/my
-Description: Get attendance history for current user.
-Response: Array of attendance records.
+Success Response (201):
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "name": "John Doe",
+  "email": "admin@company.com",
+  "role": "Admin",
+  "empCode": "ACJO20260001",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
 
-GET /api/attendance (Admin Only)
-Description: Get attendance for ALL users.
-Response: Array of attendance records.
+Error Responses:
+- 400: "User already exists"
+- 400: "Password must be at least 6 characters"
+- 400: "Invalid email format"
 
---------------------------------------------------------------------------------
-3. LEAVES
---------------------------------------------------------------------------------
+═══════════════════════════════════════════════════════════════════════════════
+3. USER MANAGEMENT API
+═══════════════════════════════════════════════════════════════════════════════
 
-POST /api/leaves
-Description: Apply for leave.
-Body: { "startDate": "2023-10-10", "endDate": "2023-10-12", "reason": "Sick", "type": "Sick Leave" }
-Response: Leave object.
+────────────────────────────────────────────────────────────────────────────────
+3.1 CREATE EMPLOYEE (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    POST /api/users/create
+Access:      Admin, HR
+Description: Create new employee account
 
-GET /api/leaves/my
-Description: Get leave history for current user.
-Response: Array of leave requests.
+Headers:
+Authorization: Bearer <admin_token>
 
-GET /api/leaves (Admin Only)
-Description: Get all leave requests across organization.
-Response: Array of leave requests.
+Request Body:
+{
+  "name": "Jane Smith",
+  "email": "jane@company.com",
+  "department": "IT",
+  "designation": "Senior Developer",
+  "salary": 80000,                  // Monthly salary
+  "dateOfJoining": "2026-01-01"     // Optional
+}
 
-PUT /api/leaves/:id
-Description: Approve or Reject a leave request (Admin Only).
-Body: { "status": "Approved" } or { "status": "Rejected" }
-Response: Updated Leave object.
+Success Response (201):
+{
+  "user": {
+    "_id": "507f1f77bcf86cd799439012",
+    "name": "Jane Smith",
+    "email": "jane@company.com",
+    "empCode": "ACJA20260002",
+    "role": "Employee",
+    "department": "IT",
+    "designation": "Senior Developer",
+    "salary": {
+      "monthly": 80000,
+      "yearly": 960000
+    }
+  },
+  "tempPassword": "x8p2qR9a",       // Share with employee
+  "message": "Employee created successfully"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+3.2 GET ALL USERS (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/users
+Access:      Admin, HR
+Description: Retrieve all employees in your company
+
+Headers:
+Authorization: Bearer <admin_token>
+
+Success Response (200):
+[
+  {
+    "_id": "507f1f77bcf86cd799439011",
+    "name": "John Doe",
+    "email": "admin@company.com",
+    "empCode": "ACJO20260001",
+    "role": "Admin",
+    "department": "Management",
+    "designation": "CEO",
+    "phone": "9876543210",
+    "image": null
+  },
+  {
+    "_id": "507f1f77bcf86cd799439012",
+    "name": "Jane Smith",
+    "email": "jane@company.com",
+    "empCode": "ACJA20260002",
+    "role": "Employee",
+    "department": "IT",
+    "designation": "Senior Developer"
+  }
+]
+
+────────────────────────────────────────────────────────────────────────────────
+3.3 GET OWN PROFILE
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/users/profile
+Access:      All authenticated users
+Description: Get current user's complete profile
+
+Headers:
+Authorization: Bearer <user_token>
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439012",
+  "name": "Jane Smith",
+  "email": "jane@company.com",
+  "empCode": "ACJA20260002",
+  "role": "Employee",
+  "companyName": "Acme Corporation",
+  "department": "IT",
+  "designation": "Senior Developer",
+  "phone": "9876543211",
+  "address": "123 Main St",
+  "residingAddress": "456 Oak Ave",
+  "nationality": "Indian",
+  "dob": "1995-05-15",
+  "gender": "Female",
+  "maritalStatus": "Single",
+  "personalEmail": "jane.personal@gmail.com",
+  "dateOfJoining": "2026-01-01",
+  "bankDetails": {
+    "accountNumber": "1234567890",
+    "pan": "ABCDE1234F",
+    "uan": "100000000000"
+  },
+  "salary": {
+    "monthly": 80000,
+    "yearly": 960000,
+    "breakdown": {
+      "basic": 40000,
+      "hra": 20000,
+      "standardAllowance": 4167,
+      "performanceBonus": 3332,
+      "travelAllowance": 3332,
+      "pf": 4800,
+      "professionalTax": 200
+    },
+    "workingDays": 5,
+    "breakTime": "1 Hour"
+  },
+  "createdAt": "2026-01-01T00:00:00.000Z"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+3.4 UPDATE OWN PROFILE
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    PUT /api/users/profile
+Access:      All authenticated users
+Description: Update personal information
+
+Headers:
+Authorization: Bearer <user_token>
+
+Request Body (All fields optional):
+{
+  "name": "Jane Doe",
+  "phone": "9876543211",
+  "address": "New Address",
+  "residingAddress": "Permanent Address",
+  "gender": "Female",
+  "maritalStatus": "Married",
+  "personalEmail": "jane@gmail.com",
+  "nationality": "Indian",
+  "dob": "1995-05-15",
+  "image": "data:image/png;base64,iVBORw0KG...",
+  "password": "newpassword123"      // Optional password change
+}
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439012",
+  "name": "Jane Doe",
+  "email": "jane@company.com",
+  "role": "Employee",
+  "image": "data:image/png;base64,iVBORw0KG...",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+────────────────────────────────────────────────────────────────────────────────
+3.5 GET USER BY ID (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/users/:id
+Access:      Admin, HR
+Description: Get specific employee details (company-restricted)
+
+Headers:
+Authorization: Bearer <admin_token>
+
+URL Parameters:
+:id - User MongoDB ObjectId
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439012",
+  "name": "Jane Smith",
+  "email": "jane@company.com",
+  "empCode": "ACJA20260002",
+  // ... full user object
+}
+
+Error Response (403):
+{
+  "message": "Not authorized to view this user"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+3.6 UPDATE USER (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    PUT /api/users/:id
+Access:      Admin, HR
+Description: Update employee details (company-restricted)
+
+Headers:
+Authorization: Bearer <admin_token>
+
+URL Parameters:
+:id - User MongoDB ObjectId
+
+Request Body (All fields optional):
+{
+  "name": "Jane Doe",
+  "email": "jane.new@company.com",
+  "phone": "9876543211",
+  "department": "Engineering",
+  "designation": "Lead Developer",
+  "salary": {
+    "monthly": 100000,
+    "breakdown": {
+      "basic": 50000,
+      "hra": 25000,
+      // ... other components
+    }
+  },
+  "bankDetails": {
+    "accountNumber": "9876543210",
+    "pan": "XYZAB5678C",
+    "uan": "200000000000"
+  },
+  "dateOfJoining": "2025-12-01",
+  "dob": "1995-05-15",
+  "image": "base64_string"
+}
+
+Security Features:
+- Cannot change own role
+- Cannot escalate privileges
+- Company verification enforced
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439012",
+  "name": "Jane Doe",
+  "email": "jane.new@company.com",
+  "role": "Employee"
+}
+
+Error Responses:
+- 403: "Not authorized to update this user"
+- 403: "Not authorized to change roles"
+
+────────────────────────────────────────────────────────────────────────────────
+3.7 DELETE USER (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    DELETE /api/users/:id
+Access:      Admin
+Description: Permanently delete employee account
+
+Headers:
+Authorization: Bearer <admin_token>
+
+URL Parameters:
+:id - User MongoDB ObjectId
+
+Security Restrictions:
+- Cannot delete yourself
+- Cannot delete other Admin users
+- Company verification enforced
+
+Success Response (200):
+{
+  "message": "User deleted successfully"
+}
+
+Error Responses:
+- 400: "Cannot delete yourself"
+- 400: "Cannot delete admin users"
+- 403: "Not authorized to delete this user"
+
+────────────────────────────────────────────────────────────────────────────────
+3.8 GET DASHBOARD STATISTICS
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/users/dashboard/stats
+Access:      All authenticated users
+Description: Get personalized dashboard metrics
+
+Headers:
+Authorization: Bearer <user_token>
+
+Success Response (200):
+{
+  "attendanceCount": 15,            // Days present this month
+  "leaveBalance": 4,                // Available paid leaves
+  "pendingTasks": 2,                // Pending leave requests
+  "totalEmployees": 50,             // Company workforce
+  "activity": [
+    {
+      "type": "attendance",
+      "title": "Checked Out",
+      "date": "2026-01-02T18:30:00.000Z",
+      "status": "Present"
+    },
+    {
+      "type": "leave",
+      "title": "Leave Request (Paid)",
+      "date": "2026-01-01T10:00:00.000Z",
+      "status": "Approved"
+    }
+  ]
+}
+
+Leave Balance Calculation:
+- 0 if no dateOfJoining set
+- 2 leaves per month after joining
+- Maximum 24 leaves per year
+- Deducts approved leave requests
+
+═══════════════════════════════════════════════════════════════════════════════
+4. ATTENDANCE API
+═══════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+4.1 CHECK IN
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    POST /api/attendance/checkin
+Access:      All authenticated users
+Description: Clock in for the day
+
+Headers:
+Authorization: Bearer <user_token>
+
+Request Body:
+{}  // Empty body
+
+Success Response (201):
+{
+  "_id": "507f1f77bcf86cd799439013",
+  "user": "507f1f77bcf86cd799439012",
+  "date": "2026-01-03",
+  "checkIn": "2026-01-03T09:00:00.000Z",
+  "checkOut": null,
+  "status": "Present"
+}
+
+Error Response (400):
+{
+  "message": "You are already checked in."
+}
+
+────────────────────────────────────────────────────────────────────────────────
+4.2 CHECK OUT
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    POST /api/attendance/checkout
+Access:      All authenticated users
+Description: Clock out for the day
+
+Headers:
+Authorization: Bearer <user_token>
+
+Request Body:
+{}  // Empty body
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439013",
+  "user": "507f1f77bcf86cd799439012",
+  "date": "2026-01-03",
+  "checkIn": "2026-01-03T09:00:00.000Z",
+  "checkOut": "2026-01-03T18:00:00.000Z",
+  "status": "Present"
+}
+
+Error Response (400):
+{
+  "message": "You are not checked in."
+}
+
+────────────────────────────────────────────────────────────────────────────────
+4.3 GET MY ATTENDANCE
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/attendance/my
+Access:      All authenticated users
+Description: Retrieve personal attendance history
+
+Headers:
+Authorization: Bearer <user_token>
+
+Success Response (200):
+[
+  {
+    "_id": "507f1f77bcf86cd799439013",
+    "user": "507f1f77bcf86cd799439012",
+    "date": "2026-01-03",
+    "checkIn": "2026-01-03T09:00:00.000Z",
+    "checkOut": "2026-01-03T18:00:00.000Z",
+    "status": "Present"
+  },
+  {
+    "_id": "507f1f77bcf86cd799439014",
+    "user": "507f1f77bcf86cd799439012",
+    "date": "2026-01-02",
+    "checkIn": "2026-01-02T09:15:00.000Z",
+    "checkOut": "2026-01-02T18:30:00.000Z",
+    "status": "Present"
+  }
+]
+
+────────────────────────────────────────────────────────────────────────────────
+4.4 GET ALL ATTENDANCE (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/attendance
+Access:      Admin, HR
+Description: View company-wide attendance records
+
+Headers:
+Authorization: Bearer <admin_token>
+
+Success Response (200):
+[
+  {
+    "_id": "507f1f77bcf86cd799439013",
+    "user": {
+      "_id": "507f1f77bcf86cd799439012",
+      "name": "Jane Smith",
+      "email": "jane@company.com"
+    },
+    "date": "2026-01-03",
+    "checkIn": "2026-01-03T09:00:00.000Z",
+    "checkOut": "2026-01-03T18:00:00.000Z",
+    "status": "Present"
+  }
+]
+
+────────────────────────────────────────────────────────────────────────────────
+4.5 UPDATE ATTENDANCE (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    PUT /api/attendance/:id
+Access:      Admin, HR
+Description: Correct attendance records (company-restricted)
+
+Headers:
+Authorization: Bearer <admin_token>
+
+URL Parameters:
+:id - Attendance record ObjectId
+
+Request Body (All fields optional):
+{
+  "checkIn": "2026-01-03T09:00:00.000Z",
+  "checkOut": "2026-01-03T18:00:00.000Z",
+  "status": "Present"                    // Present, Absent, Half-day, Leave
+}
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439013",
+  "user": "507f1f77bcf86cd799439012",
+  "date": "2026-01-03",
+  "checkIn": "2026-01-03T09:00:00.000Z",
+  "checkOut": "2026-01-03T18:00:00.000Z",
+  "status": "Present"
+}
+
+Error Response (403):
+{
+  "message": "Not authorized to update this attendance"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+4.6 DELETE ATTENDANCE (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    DELETE /api/attendance/:id
+Access:      Admin, HR
+Description: Remove incorrect attendance record
+
+Headers:
+Authorization: Bearer <admin_token>
+
+URL Parameters:
+:id - Attendance record ObjectId
+
+Success Response (200):
+{
+  "message": "Attendance record deleted"
+}
+
+Error Response (403):
+{
+  "message": "Not authorized to delete this attendance"
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+5. LEAVE MANAGEMENT API
+═══════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+5.1 APPLY FOR LEAVE
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    POST /api/leaves
+Access:      All authenticated users
+Description: Submit leave request
+
+Headers:
+Authorization: Bearer <user_token>
+
+Request Body:
+{
+  "type": "Paid",                    // Paid, Sick, Unpaid
+  "startDate": "2026-01-10",
+  "endDate": "2026-01-12",
+  "reason": "Family emergency"       // Optional
+}
+
+Success Response (201):
+{
+  "_id": "507f1f77bcf86cd799439015",
+  "user": "507f1f77bcf86cd799439012",
+  "type": "Paid",
+  "startDate": "2026-01-10T00:00:00.000Z",
+  "endDate": "2026-01-12T00:00:00.000Z",
+  "reason": "Family emergency",
+  "status": "Pending",
+  "appliedAt": "2026-01-03T10:00:00.000Z"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+5.2 GET MY LEAVES
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/leaves/my
+Access:      All authenticated users
+Description: View personal leave history
+
+Headers:
+Authorization: Bearer <user_token>
+
+Success Response (200):
+[
+  {
+    "_id": "507f1f77bcf86cd799439015",
+    "user": "507f1f77bcf86cd799439012",
+    "type": "Paid",
+    "startDate": "2026-01-10T00:00:00.000Z",
+    "endDate": "2026-01-12T00:00:00.000Z",
+    "reason": "Family emergency",
+    "status": "Pending",
+    "appliedAt": "2026-01-03T10:00:00.000Z"
+  }
+]
+
+────────────────────────────────────────────────────────────────────────────────
+5.3 GET ALL LEAVES (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/leaves
+Access:      Admin, HR
+Description: View all company leave requests
+
+Headers:
+Authorization: Bearer <admin_token>
+
+Success Response (200):
+[
+  {
+    "_id": "507f1f77bcf86cd799439015",
+    "user": {
+      "_id": "507f1f77bcf86cd799439012",
+      "name": "Jane Smith",
+      "email": "jane@company.com"
+    },
+    "type": "Paid",
+    "startDate": "2026-01-10T00:00:00.000Z",
+    "endDate": "2026-01-12T00:00:00.000Z",
+    "reason": "Family emergency",
+    "status": "Pending",
+    "appliedAt": "2026-01-03T10:00:00.000Z"
+  }
+]
+
+────────────────────────────────────────────────────────────────────────────────
+5.4 UPDATE LEAVE STATUS (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    PUT /api/leaves/:id
+Access:      Admin, HR
+Description: Approve or reject leave request (company-restricted)
+
+Headers:
+Authorization: Bearer <admin_token>
+
+URL Parameters:
+:id - Leave request ObjectId
+
+Request Body:
+{
+  "status": "Approved"               // Approved, Rejected
+}
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439015",
+  "user": "507f1f77bcf86cd799439012",
+  "type": "Paid",
+  "startDate": "2026-01-10T00:00:00.000Z",
+  "endDate": "2026-01-12T00:00:00.000Z",
+  "reason": "Family emergency",
+  "status": "Approved",
+  "appliedAt": "2026-01-03T10:00:00.000Z"
+}
+
+Error Response (403):
+{
+  "message": "Not authorized to update this leave"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+5.5 DELETE LEAVE REQUEST
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    DELETE /api/leaves/:id
+Access:      Leave requester only
+Description: Cancel pending leave request
+
+Headers:
+Authorization: Bearer <user_token>
+
+URL Parameters:
+:id - Leave request ObjectId
+
+Restrictions:
+- Can only delete own leaves
+- Can only delete Pending status leaves
+
+Success Response (200):
+{
+  "message": "Leave request deleted"
+}
+
+Error Responses:
+- 400: "Cannot delete approved/rejected leaves"
+- 403: "Not authorized to delete this leave"
+
+═══════════════════════════════════════════════════════════════════════════════
+6. ANNOUNCEMENT API
+═══════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+6.1 CREATE ANNOUNCEMENT (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    POST /api/announcements
+Access:      Admin, HR
+Description: Create company-wide announcement
+
+Headers:
+Authorization: Bearer <admin_token>
+
+Request Body:
+{
+  "title": "New Policy Update",
+  "message": "Please review the updated leave policy.",
+  "type": "warning",                 // info, warning, success, error
+  "expiresAt": "2026-02-01"          // Optional expiry date
+}
+
+Success Response (201):
+{
+  "_id": "507f1f77bcf86cd799439016",
+  "title": "New Policy Update",
+  "message": "Please review the updated leave policy.",
+  "type": "warning",
+  "companyName": "Acme Corporation",
+  "createdBy": "507f1f77bcf86cd799439011",
+  "isActive": true,
+  "expiresAt": "2026-02-01T00:00:00.000Z",
+  "createdAt": "2026-01-03T10:00:00.000Z"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+6.2 GET ANNOUNCEMENTS
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    GET /api/announcements
+Access:      All authenticated users
+Description: Retrieve active company announcements
+
+Headers:
+Authorization: Bearer <user_token>
+
+Query Filters (Automatic):
+- Only company-specific announcements
+- Only active announcements
+- Only non-expired announcements
+- Sorted by newest first
+
+Success Response (200):
+[
+  {
+    "_id": "507f1f77bcf86cd799439016",
+    "title": "New Policy Update",
+    "message": "Please review the updated leave policy.",
+    "type": "warning",
+    "companyName": "Acme Corporation",
+    "createdBy": {
+      "_id": "507f1f77bcf86cd799439011",
+      "name": "John Doe"
+    },
+    "isActive": true,
+    "expiresAt": "2026-02-01T00:00:00.000Z",
+    "createdAt": "2026-01-03T10:00:00.000Z"
+  }
+]
+
+────────────────────────────────────────────────────────────────────────────────
+6.3 UPDATE ANNOUNCEMENT (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    PUT /api/announcements/:id
+Access:      Admin, HR
+Description: Edit announcement (company-restricted)
+
+Headers:
+Authorization: Bearer <admin_token>
+
+URL Parameters:
+:id - Announcement ObjectId
+
+Request Body (All fields optional):
+{
+  "title": "Updated Title",
+  "message": "Updated message content",
+  "type": "info",
+  "isActive": false                  // Deactivate announcement
+}
+
+Success Response (200):
+{
+  "_id": "507f1f77bcf86cd799439016",
+  "title": "Updated Title",
+  "message": "Updated message content",
+  "type": "info",
+  "isActive": false,
+  // ... rest of fields
+}
+
+Error Response (403):
+{
+  "message": "Not authorized"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+6.4 DELETE ANNOUNCEMENT (ADMIN ONLY)
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    DELETE /api/announcements/:id
+Access:      Admin, HR
+Description: Permanently remove announcement
+
+Headers:
+Authorization: Bearer <admin_token>
+
+URL Parameters:
+:id - Announcement ObjectId
+
+Success Response (200):
+{
+  "message": "Announcement deleted"
+}
+
+Error Response (403):
+{
+  "message": "Not authorized"
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+7. AI CHATBOT API
+═══════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+7.1 SEND MESSAGE TO AI
+────────────────────────────────────────────────────────────────────────────────
+Endpoint:    POST /api/chat
+Access:      All authenticated users
+Description: Interact with RAG-powered HR assistant
+
+Headers:
+Authorization: Bearer <user_token>
+
+Request Body:
+{
+  "message": "How many leaves do I have?"
+}
+
+Context Retrieved (Automatic):
+- User profile (name, role, department)
+- Current attendance status
+- Recent leave requests
+- Company employee count (filtered by company)
+
+Success Response (200):
+{
+  "reply": "Hi Jane! Based on your profile, you have 4 paid leaves available. You've been with us for 2 months, so you've accrued 4 leaves. Would you like to apply for time off?"
+}
+
+AI Models Used:
+1. Primary: Groq LLaMA 3.3 70B (if GROQ_API_KEY configured)
+2. Fallback: Heuristic rule-based responses
+
+Error Response (500):
+{
+  "message": "AI Service Unavailable"
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+8. ERROR CODES & RESPONSES
+═══════════════════════════════════════════════════════════════════════════════
+
+HTTP Status Codes:
+┌──────┬─────────────────┬────────────────────────────────────────────────────┐
+│ Code │ Status          │ Description                                        │
+├──────┼─────────────────┼────────────────────────────────────────────────────┤
+│ 200  │ OK              │ Request successful                                 │
+│ 201  │ Created         │ Resource created successfully                      │
+│ 400  │ Bad Request     │ Invalid input/validation error                     │
+│ 401  │ Unauthorized    │ Missing or invalid authentication token            │
+│ 403  │ Forbidden       │ Insufficient permissions                           │
+│ 404  │ Not Found       │ Resource doesn't exist                             │
+│ 500  │ Server Error    │ Internal server error                              │
+└──────┴─────────────────┴────────────────────────────────────────────────────┘
+
+Common Error Response Format:
+{
+  "message": "Descriptive error message",
+  "error": "Additional technical details (development only)"
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+9. REQUEST/RESPONSE EXAMPLES
+═══════════════════════════════════════════════════════════════════════════════
+
+Example 1: Complete Login Flow
+────────────────────────────────────────────────────────────────────────────────
+# Request
+curl -X POST http://localhost:5000/api/users/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@company.com",
+    "password": "password123"
+  }'
+
+# Response
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "name": "John Doe",
+  "email": "admin@company.com",
+  "empCode": "ACJO20260001",
+  "role": "Admin",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUwN2YxZjc3YmNmODZjZDc5OTQzOTAxMSIsImlhdCI6MTcwNDI3MjQwMCwiZXhwIjoxNzA2ODY0NDAwfQ.xyz"
+}
+
+Example 2: Create Employee with Full Details
+────────────────────────────────────────────────────────────────────────────────
+# Request
+curl -X POST http://localhost:5000/api/users/create \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGc..." \
+  -d '{
+    "name": "Jane Smith",
+    "email": "jane@company.com",
+    "department": "Engineering",
+    "designation": "Senior Developer",
+    "salary": 100000,
+    "dateOfJoining": "2026-01-01"
+  }'
+
+# Response
+{
+  "user": {
+    "_id": "507f1f77bcf86cd799439012",
+    "name": "Jane Smith",
+    "email": "jane@company.com",
+    "empCode": "ACJA20260002",
+    "role": "Employee",
+    "companyName": "Acme Corporation",
+    "department": "Engineering",
+    "designation": "Senior Developer",
+    "dateOfJoining": "2026-01-01T00:00:00.000Z",
+    "salary": {
+      "monthly": 100000,
+      "yearly": 1200000,
+      "breakdown": {
+        "basic": 50000,
+        "hra": 25000,
+        "standardAllowance": 4167,
+        "performanceBonus": 4165,
+        "travelAllowance": 4165,
+        "pf": 6000,
+        "professionalTax": 200
+      },
+      "workingDays": 5,
+      "breakTime": "1 Hour"
+    },
+    "createdAt": "2026-01-03T10:00:00.000Z"
+  },
+  "tempPassword": "x8p2qR9a",
+  "message": "Employee created successfully"
+}
+
+Example 3: Check In and Check Out Flow
+────────────────────────────────────────────────────────────────────────────────
+# Check In Request
+curl -X POST http://localhost:5000/api/attendance/checkin \
+  -H "Authorization: Bearer eyJhbGc..." \
+  -H "Content-Type: application/json" \
+  -d '{}'
+
+# Check In Response
+{
+  "_id": "507f1f77bcf86cd799439013",
+  "user": "507f1f77bcf86cd799439012",
+  "date": "2026-01-03",
+  "checkIn": "2026-01-03T09:00:00.000Z",
+  "checkOut": null,
+  "status": "Present"
+}
+
+# Check Out Request (9 hours later)
+curl -X POST http://localhost:5000/api/attendance/checkout \
+  -H "Authorization: Bearer eyJhbGc..." \
+  -H "Content-Type: application/json" \
+  -d '{}'
+
+# Check Out Response
+{
+  "_id": "507f1f77bcf86cd799439013",
+  "user": "507f1f77bcf86cd799439012",
+  "date": "2026-01-03",
+  "checkIn": "2026-01-03T09:00:00.000Z",
+  "checkOut": "2026-01-03T18:00:00.000Z",
+  "status": "Present"
+}
+
+# Work Hours: 9 hours
+
+Example 4: Leave Request and Approval
+────────────────────────────────────────────────────────────────────────────────
+# Employee: Apply Leave
+curl -X POST http://localhost:5000/api/leaves \
+  -H "Authorization: Bearer <employee_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "Paid",
+    "startDate": "2026-01-15",
+    "endDate": "2026-01-17",
+    "reason": "Personal work"
+  }'
+
+# Response
+{
+  "_id": "507f1f77bcf86cd799439015",
+  "user": "507f1f77bcf86cd799439012",
+  "type": "Paid",
+  "startDate": "2026-01-15T00:00:00.000Z",
+  "endDate": "2026-01-17T00:00:00.000Z",
+  "reason": "Personal work",
+  "status": "Pending",
+  "appliedAt": "2026-01-03T10:00:00.000Z"
+}
+
+# Admin: Approve Leave
+curl -X PUT http://localhost:5000/api/leaves/507f1f77bcf86cd799439015 \
+  -H "Authorization: Bearer <admin_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "Approved"
+  }'
+
+# Response
+{
+  "_id": "507f1f77bcf86cd799439015",
+  "user": "507f1f77bcf86cd799439012",
+  "type": "Paid",
+  "startDate": "2026-01-15T00:00:00.000Z",
+  "endDate": "2026-01-17T00:00:00.000Z",
+  "reason": "Personal work",
+  "status": "Approved",
+  "appliedAt": "2026-01-03T10:00:00.000Z"
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+10. SECURITY BEST PRACTICES
+═══════════════════════════════════════════════════════════════════════════════
+
+Token Management:
+────────────────────────────────────────────────────────────────────────────────
+✅ DO:
+  - Store tokens securely (localStorage/sessionStorage)
+  - Include token in Authorization header: "Bearer <token>"
+  - Implement token refresh mechanism before expiry
+  - Clear tokens on logout
+
+❌ DON'T:
+  - Store tokens in cookies without httpOnly flag
+  - Expose tokens in URL parameters
+  - Share tokens between users
+  - Store tokens in plain text files
+
+Password Requirements:
+────────────────────────────────────────────────────────────────────────────────
+- Minimum 6 characters (enforced)
+- Mix of letters and numbers (recommended)
+- Special characters (recommended)
+- No personal information (recommended)
+
+Rate Limiting:
+────────────────────────────────────────────────────────────────────────────────
+Recommended limits per IP:
+- Login attempts: 5 per 15 minutes
+- API requests: 100 per minute
+- File uploads: 10 per hour
+
+Data Validation:
+────────────────────────────────────────────────────────────────────────────────
+All input is validated on:
+1. Client-side (React forms)
+2. Server-side (Express validators)
+3. Database-level (Mongoose schemas)
+
+Company Isolation:
+────────────────────────────────────────────────────────────────────────────────
+Every query automatically filters by companyName:
+- Users can only see their company's data
+- Admins cannot access other companies
+- Complete data segregation enforced
+
+Audit Trail:
+────────────────────────────────────────────────────────────────────────────────
+All records include:
+- createdBy: User who created
+- createdAt: Timestamp of creation
+- updatedAt: Last modification time (Mongoose)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+                            END OF DOCUMENTATION
+
+                    For support: support@dayflow.com
+                 GitHub: github.com/yourusername/dayflow-hrms
+
+═══════════════════════════════════════════════════════════════════════════════
