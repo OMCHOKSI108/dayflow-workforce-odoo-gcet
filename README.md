@@ -484,9 +484,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ##  Support
 
 For issues, questions, or feature requests:
--  Email: support@dayflow.com
--  Issues: [GitHub Issues](https://github.com/yourusername/dayflow-hrms/issues)
--  Discussions: [GitHub Discussions](https://github.com/yourusername/dayflow-hrms/discussions)
+-  Email: OMCHOKSI99@GMAIL.COM
+-  Issues: [GitHub Issues](https://github.com/OMCHOKSI108/dayflow-workforce-odoo-gcet/issues)
+-  Discussions: [GitHub Discussions](https://github.com/OMCHOKSI108/dayflow-workforce-odoo-gcet/discussions)
 
 ---
 
