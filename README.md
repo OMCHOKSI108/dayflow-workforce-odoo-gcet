@@ -369,25 +369,62 @@ POST   /api/chat                   # Send message
 
 ##  Screenshots
 
-### Dashboard
-![Dashboard](docs/screenshots/dashboard.png)
-*Real-time metrics, activity feed, and announcements*
+> 📸 **All screenshots are from the actual running application**
 
-### Employee Directory
-![Employees](docs/screenshots/employees.png)
-*Searchable team directory with status indicators*
+### 🏠 Landing Page
+![Landing Page](assets/06_landing_page.png)
+*Modern, professional landing page with clear value proposition*
 
-### Attendance Tracking
-![Attendance](docs/screenshots/attendance.png)
-*Check-in/out with work hours calculation*
+---
 
-### Leave Management
-![Leaves](docs/screenshots/leaves.png)
-*Leave application and approval workflow*
+### 🔐 Authentication
 
-### Profile Management
-![Profile](docs/screenshots/profile.png)
-*Comprehensive employee profile editor*
+| Login | Sign Up |
+|:-----:|:-------:|
+| ![Login](assets/08_login_page.png) | ![Signup](assets/09_signup_page.png) |
+
+*Secure authentication with email/employee code login and organization registration*
+
+---
+
+### 📊 Dashboard Views
+
+**Admin Dashboard**
+![Admin Dashboard](assets/01_admin_dashboard.png)
+*Admin view with employee overview, attendance metrics, and company-wide analytics*
+
+**Employee Dashboard**
+![Employee Dashboard](assets/04_employee_dashboard.png)
+*Personal dashboard with attendance count, leave balance, and announcements*
+
+---
+
+### 👥 Employee Management
+
+**Employee Directory**
+![Employee Directory](assets/05_employee_directory.png)
+*Searchable team directory with status indicators (Present/Leave/Absent)*
+
+**Salary Management**
+![Salary Management](assets/02_salary_management.png)
+*Detailed salary breakdown with auto-calculation and admin edit capabilities*
+
+---
+
+### ⏰ Attendance & Leave
+
+| Attendance Check-In | Leave Management |
+|:-------------------:|:----------------:|
+| ![Attendance](assets/03_attendance_checkin.png) | ![Leave](assets/07_leave_management.png) |
+
+*One-click attendance tracking and comprehensive leave application system*
+
+---
+
+### ⚙️ Backend API
+
+![Backend API](assets/10_backend_api.png)
+*RESTful API with comprehensive endpoints for all HRMS operations*
 
 ---
 
