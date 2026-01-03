@@ -59,10 +59,12 @@ const Dashboard = () => {
             setNewAnnouncement({ title: '', message: '', type: 'info' });
             
             // Refresh announcements
-            const { data } = await axios.get('http://localhost:5000/api/announcements', config);
+            const { data } = await axios.get(`${API_URL}/api/announcements`, config);
             setAnnouncements(data);
         } catch (error) {
-            alert(error.response?.data?.message || 'Failed to create announcement');
+            const errorMsg = error.response?.data?.message || 'Failed to create announcement';
+            alert(errorMsg);
+            console.error('Announcement creation error:', error.response?.data);
         }
     };
     

@@ -7,11 +7,19 @@ const createAnnouncement = async (req, res) => {
     try {
         const { title, message, type, expiresAt } = req.body;
         
+        console.log('Creating announcement:', { title, message, type, userId: req.user._id });
+        
         if (!title || !message) {
             return res.status(400).json({ message: 'Title and message are required' });
         }
         
         const user = await User.findById(req.user._id);
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        console.log('User found:', { name: user.name, company: user.companyName });
         
         const announcement = await Announcement.create({
             title,
@@ -22,8 +30,11 @@ const createAnnouncement = async (req, res) => {
             expiresAt: expiresAt || null
         });
         
+        console.log('Announcement created:', announcement._id);
+        
         res.status(201).json(announcement);
     } catch (error) {
+        console.error('Error creating announcement:', error);
         res.status(500).json({ message: 'Error creating announcement', error: error.message });
     }
 };
