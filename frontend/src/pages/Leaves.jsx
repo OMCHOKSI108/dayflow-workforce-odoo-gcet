@@ -4,6 +4,7 @@ import AuthContext from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Download, X, Check, XCircle, FileText, Calendar, Filter } from 'lucide-react';
 import Navbar from '../components/Sidebar'; // Assuming Sidebar is the navbar based on previous steps
+import { API_URL } from '../config/api';
 
 const Leaves = () => {
     const { user } = useContext(AuthContext);

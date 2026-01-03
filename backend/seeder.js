@@ -9,6 +9,9 @@ const bcrypt = require('bcryptjs');
 dotenv.config();
 connectDB();
 
+// Flag to check if seeder has already run
+const SEEDER_FLAG = 'SEEDER_RUN';
+
 const indianFirstNames = [
     "Aarav", "Vihaan", "Aditya", "Sai", "Arjun", "Reyansh", "Muhammad", "Krishna", "Ishaan", "Shaurya",
     "Aadhya", "Diya", "Saanvi", "Ananya", "Myra", "Kiara", "Pari", "Amaira", "Riya", "Fatima",
@@ -72,6 +75,14 @@ const calculateSalaryBreakdown = (monthlySalary) => {
 
 const importData = async () => {
     try {
+        // Check if data already exists to prevent duplicate seeding
+        const existingUsers = await User.countDocuments();
+        if (existingUsers > 0) {
+            console.log('⚠️  Database already contains data. Skipping seeder to prevent duplicates.');
+            console.log(`Found ${existingUsers} existing users.`);
+            process.exit(0);
+        }
+
         await User.deleteMany();
         await Attendance.deleteMany();
         await Leave.deleteMany();

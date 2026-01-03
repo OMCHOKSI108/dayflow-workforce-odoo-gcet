@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../config/api';
 
 const Employees = () => {
     const { user } = useContext(AuthContext);

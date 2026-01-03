@@ -1,222 +1,265 @@
-#  Dayflow - Human Resource Management System (HRMS)
-
 <div align="center">
 
-![Dayflow Logo](docs/readme.png)
+# Dayflow - Human Resource Management System
 
-**Every workday, perfectly aligned.**
+<img src="docs/logo.png" alt="Dayflow Logo" width="180"/>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/Node.js-18.x-green.svg)](https://nodejs.org/)
-[![React](https://img.shields.io/badge/React-19.x-blue.svg)](https://reactjs.org/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-6.x-brightgreen.svg)](https://www.mongodb.com/)
+### Every workday, perfectly aligned.
 
-[Features](#-features)  [Installation](#-installation)  [Usage](#-usage)  [API Docs](#-api-documentation)  [Screenshots](#-screenshots)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-714B67?style=for-the-badge)](https://dayflow-workforce-odoo-gcet.vercel.app/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
+[![Node.js](https://img.shields.io/badge/Node.js-22.x-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-19.x-61DAFB?style=flat-square&logo=react&logoColor=black)](https://reactjs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-6.x-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Express](https://img.shields.io/badge/Express-5.x-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
+
+**[View Live Demo](https://dayflow-workforce-odoo-gcet.vercel.app/)** | **[API Documentation](#api-documentation)** | **[Screenshots](#screenshots)**
 
 </div>
 
 ---
 
-##  Table of Contents
+## Table of Contents
 
-- [About](#-about)
-- [Problem Statement](#-problem-statement)
-- [Features](#-features)
-- [Technology Stack](#-technology-stack)
-- [Architecture](#-architecture)
-- [Installation](#-installation)
-- [Configuration](#-configuration)
-- [Usage](#-usage)
-- [API Documentation](#-api-documentation)
-- [Screenshots](#-screenshots)
-- [Security](#-security)
-- [Contributing](#-contributing)
-- [License](#-license)
+1. [About the Project](#about-the-project)
+2. [Problem Statement](#problem-statement)
+3. [Our Solution](#our-solution)
+4. [Key Features](#key-features)
+5. [Technology Stack](#technology-stack)
+6. [System Architecture](#system-architecture)
+7. [Screenshots](#screenshots)
+8. [Installation Guide](#installation-guide)
+9. [API Documentation](#api-documentation)
+10. [Security Features](#security-features)
+11. [Team](#team)
 
 ---
 
-##  About
+## About the Project
 
-**Dayflow** is a modern, full-stack Human Resource Management System (HRMS) designed to digitize and automate core HR operations for organizations of all sizes. Built with a focus on simplicity, security, and scalability, Dayflow provides a centralized platform for managing employees, tracking attendance, processing leave requests, and maintaining payroll visibility.
+**Dayflow** is a modern, full-stack Human Resource Management System (HRMS) designed to digitize and automate core HR operations for organizations of all sizes. Built with Odoo-inspired design principles, Dayflow provides a centralized platform for managing employees, tracking attendance, processing leave requests, and maintaining payroll visibility.
 
-**Key Highlights:**
--  **Role-Based Access Control** - Secure multi-role architecture (Admin, HR, Employee)
--  **Multi-Company Support** - Complete data isolation between organizations
--  **AI-Powered Assistant** - RAG-based chatbot using Groq LLaMA 3.3 70B
--  **Real-Time Dashboard** - Comprehensive analytics and activity tracking
--  **Enterprise Security** - JWT authentication, password encryption, CORS protection
--  **Professional UI** - Odoo-inspired design with smooth animations
+### Live Demo
+
+**Website:** [https://dayflow-workforce-odoo-gcet.vercel.app/](https://dayflow-workforce-odoo-gcet.vercel.app/)
 
 ---
 
-##  Problem Statement
+## Problem Statement
 
-Organizations struggle with:
--  Manual, fragmented, and error-prone HR processes
--  Inefficient employee onboarding and management
--  Inaccurate attendance tracking and leave approvals
--  Lack of payroll transparency and visibility
--  Poor role-based access control and data security
+Organizations today face significant challenges in HR management:
 
-**Dayflow solves these problems by providing:**
--  Automated, centralized HR operations
--  Streamlined employee lifecycle management
--  Digital attendance and leave management
--  Transparent salary structures with auto-calculation
--  Secure, role-based data access and audit trails
+| Challenge | Impact |
+|-----------|--------|
+| Manual, paper-based HR processes | 40% time wasted on administrative tasks |
+| Fragmented employee data | Poor decision-making, compliance risks |
+| Inaccurate attendance tracking | Payroll errors, employee dissatisfaction |
+| Opaque salary structures | Trust issues, high attrition |
+| Weak access control | Security vulnerabilities, data breaches |
 
 ---
 
-##  Features
+## Our Solution
 
-###  Authentication & Authorization
-- **Secure Sign Up** - Organization registration with admin account creation
-- **JWT Authentication** - Token-based secure login with 30-day validity
-- **Role-Based Access** - Three-tier system (Admin, HR, Employee)
-- **Multi-Company Isolation** - Complete data segregation between organizations
+Dayflow addresses these challenges through:
 
-###  Employee Management
-- **Smart Employee Codes** - Auto-generated unique IDs (e.g., `DAOM20260001`)
-- **Comprehensive Profiles** - Personal info, work details, bank info, salary breakdown
-- **Team Directory** - Searchable grid with status indicators (Present/Leave/Absent)
-- **Excel Export** - Bulk data export for reporting and compliance
-- **CRUD Operations** - Full create, read, update, delete capabilities (Admin only)
-
-###  Attendance Tracking
-- **Real-Time Check-In/Out** - One-click clock management with timestamp
-- **Work Hours Calculation** - Automatic duration tracking
-- **Monthly Statistics** - Present days, leaves, and working days summary
-- **Admin Dashboard** - View all employee attendance across company
-- **Edit & Delete** - Admin can correct attendance errors (NEW)
-
-###  Leave Management
-- **Leave Application** - Request Paid, Sick, or Unpaid time off
-- **Approval Workflow** - Admin/HR can approve or reject requests
-- **Leave Balance** - Automatic calculation based on tenure (2 leaves/month, 24/year)
-- **Status Tracking** - Real-time view of Pending, Approved, Rejected leaves
-- **Delete Requests** - Users can cancel pending leave applications (NEW)
-
-###  Payroll Management
-- **Auto-Calculated Salary** - Smart breakdown based on gross wage
-  - Basic: 50% of gross
-  - HRA: 25% of gross (50% of basic)
-  - Standard Allowance: 4,167 fixed
-  - Performance Bonus: 8.33% of basic
-  - Travel Allowance: 8.33% of basic
-  - PF Deduction: 12% of basic
-  - Professional Tax: 200 fixed
-- **Salary Editor** - Admin can modify components with live updates
-- **Read-Only View** - Employees can view their salary structure
-
-###  Announcements (NEW)
-- **Create Announcements** - Admin/HR can broadcast company-wide messages
-- **Color-Coded Types** - Info (Blue), Warning (Yellow), Success (Green), Important (Red)
-- **Auto-Expiry** - Optional expiration date for time-sensitive notices
-- **Company-Specific** - Only visible to same organization members
-
-###  AI Chatbot
-- **RAG-Powered** - Retrieval Augmented Generation with user context
-- **Groq Integration** - LLaMA 3.3 70B model for intelligent responses
-- **Context-Aware** - Knows user profile, attendance status, leave history
-- **Fallback Engine** - Heuristic responses when API unavailable
-- **HR-Focused** - Trained specifically for HR-related queries
-
-###  Dashboard & Analytics
-- **Key Metrics** - Attendance count, leave balance, pending tasks, total employees
-- **Recent Activity** - Timeline of check-ins/outs and leave requests
-- **Announcements Board** - Company-wide notifications and updates
-- **Real-Time Updates** - Live data synchronization across platform
+- **Centralized HR Operations** - Single platform for all HR activities
+- **Automated Workflows** - Reduce manual intervention in routine tasks
+- **Real-Time Analytics** - Data-driven insights for better decisions
+- **Role-Based Security** - Granular access control (Admin, HR, Employee)
+- **Multi-Company Support** - Complete data isolation between organizations
+- **AI-Powered Assistant** - Intelligent chatbot using Groq LLaMA 3.3 70B
 
 ---
 
-##  Technology Stack
+## Key Features
+
+### Authentication & Authorization
+- Secure organization registration with admin account creation
+- JWT token-based authentication (30-day validity)
+- Three-tier role system: Admin, HR, Employee
+- Auto-generated employee codes (e.g., `DAOM20260001`)
+
+### Employee Management
+- Comprehensive employee profiles (personal, work, bank details)
+- Searchable team directory with status indicators
+- Excel export for reporting and compliance
+- Full CRUD operations for administrators
+
+### Attendance Tracking
+- One-click check-in/check-out with timestamps
+- Automatic work hours calculation
+- Monthly attendance statistics
+- Admin can edit and delete attendance records
+
+### Leave Management
+- Apply for Paid, Sick, or Unpaid leave
+- Approval workflow for Admin/HR
+- Automatic leave balance calculation (2 leaves/month)
+- Real-time status tracking (Pending/Approved/Rejected)
+
+### Payroll System
+Smart salary auto-calculation with breakdown:
+
+| Component | Calculation |
+|-----------|-------------|
+| Basic | 50% of Gross |
+| HRA | 25% of Gross |
+| Standard Allowance | Fixed 4,167 |
+| Performance Bonus | 8.33% of Basic |
+| Travel Allowance | 8.33% of Basic |
+| PF Deduction | 12% of Basic |
+| Professional Tax | Fixed 200 |
+
+### AI Chatbot
+- Powered by Groq LLaMA 3.3 70B
+- Context-aware responses based on user profile
+- HR-focused knowledge base
+- Fallback engine for offline scenarios
+
+### Dashboard & Announcements
+- Key metrics: Attendance, Leave Balance, Pending Tasks
+- Recent activity timeline
+- Company-wide announcement system
+- Real-time data synchronization
+
+---
+
+## Technology Stack
 
 ### Backend
-```
-Node.js         v18.x       - JavaScript runtime
-Express.js      v5.x        - Web application framework
-MongoDB         v6.x        - NoSQL database
-Mongoose        v9.x        - MongoDB object modeling
-JWT             v9.x        - Authentication tokens
-Bcrypt.js       v3.x        - Password hashing
-Groq SDK        v0.37       - AI model integration
-CORS            v2.x        - Cross-origin security
-```
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Node.js | 22.x | Runtime Environment |
+| Express.js | 5.x | Web Framework |
+| MongoDB | 6.x | Database |
+| Mongoose | 9.x | ODM |
+| JWT | 9.x | Authentication |
+| Bcrypt.js | 3.x | Password Hashing |
+| Groq SDK | 0.37 | AI Integration |
 
 ### Frontend
-```
-React           v19.x       - UI library
-Vite            v7.x        - Build tool & dev server
-React Router    v7.x        - Client-side routing
-Axios           v1.x        - HTTP client
-Material-UI     v7.x        - Component library
-Framer Motion   v12.x       - Animation library
-Lucide React    v0.562      - Icon library
-XLSX            v0.18       - Excel export
-```
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| React | 19.x | UI Library |
+| Vite | 7.x | Build Tool |
+| React Router | 7.x | Routing |
+| Axios | 1.x | HTTP Client |
+| Material-UI | 7.x | Component Library |
+| Framer Motion | 12.x | Animations |
+| Lucide React | 0.562 | Icons |
 
 ---
 
-##  Architecture
+## System Architecture
 
-### System Design
 ```
-
-                     CLIENT (React SPA)                       
-              
-  Dashboard  Employees   Leaves    Attendance      
-              
-
-                                            
-        
-                     HTTPS/REST
-        
-                      API GATEWAY (Express)                   
-                 
-             Auth         Protected      Admin       
-          Middleware      Routes      Middleware     
-                 
-        
-                    
-        
-                      BUSINESS LOGIC                          
-                  
-           User   Attend  Leave    Chat   Announ
-           Ctrl    Ctrl    Ctrl    Ctrl    Ctrl 
-                  
-        
-                    
-        
-                        DATABASE LAYER                        
-                 
-              User       Attendance      Leave       
-             Model         Model         Model       
-                 
-                MongoDB with Mongoose ODM                    
-        
++--------------------------------------------------+
+|              CLIENT (React SPA)                   |
+|  Dashboard | Employees | Leaves | Attendance     |
++--------------------------------------------------+
+                      |
+                      | HTTPS/REST API
+                      v
++--------------------------------------------------+
+|            API GATEWAY (Express.js)               |
+|  Auth Middleware | Routes | Admin Middleware      |
++--------------------------------------------------+
+                      |
+                      v
++--------------------------------------------------+
+|            BUSINESS LOGIC LAYER                   |
+|  UserCtrl | AttendCtrl | LeaveCtrl | ChatCtrl    |
++--------------------------------------------------+
+                      |
+                      v
++--------------------------------------------------+
+|              DATABASE (MongoDB)                   |
+|  User Model | Attendance | Leave | Announcement  |
++--------------------------------------------------+
 ```
 
 ### Data Flow
-1. **Client** sends HTTP request with JWT token
-2. **Auth Middleware** validates token and extracts user
-3. **Controller** processes business logic with company filtering
-4. **Model** performs database operations with Mongoose
-5. **Response** sent back to client with JSON data
+1. Client sends HTTP request with JWT token
+2. Auth Middleware validates token and extracts user
+3. Controller processes business logic with company filtering
+4. Model performs database operations
+5. Response sent back to client as JSON
 
 ---
 
-##  Installation
+## Screenshots
+
+> All screenshots are from the actual running application
+
+### Landing Page
+![Landing Page](assets/06_landing_page.png)
+*Modern, professional landing page with clear value proposition*
+
+---
+
+### Authentication
+
+| Login Page | Registration Page |
+|:----------:|:-----------------:|
+| ![Login](assets/08_login_page.png) | ![Signup](assets/09_signup_page.png) |
+
+*Secure authentication with email/employee code login*
+
+---
+
+### Dashboard
+
+**Admin Dashboard**
+![Admin Dashboard](assets/01_admin_dashboard.png)
+*Company-wide analytics, employee overview, and quick actions*
+
+**Employee Dashboard**
+![Employee Dashboard](assets/04_employee_dashboard.png)
+*Personal metrics, attendance status, and announcements*
+
+---
+
+### Employee Management
+
+**Employee Directory**
+![Employee Directory](assets/05_employee_directory.png)
+*Searchable grid with status indicators (Present/Leave/Absent)*
+
+**Salary Management**
+![Salary Management](assets/02_salary_management.png)
+*Auto-calculated salary breakdown with editable components*
+
+---
+
+### Attendance & Leave
+
+| Attendance Check-In | Leave Management |
+|:-------------------:|:----------------:|
+| ![Attendance](assets/03_attendance_checkin.png) | ![Leave](assets/07_leave_management.png) |
+
+*One-click attendance and comprehensive leave application system*
+
+---
+
+### Backend API
+![Backend API](assets/10_backend_api.png)
+*RESTful API with comprehensive endpoint documentation*
+
+---
+
+## Installation Guide
 
 ### Prerequisites
-- Node.js v18+ installed
-- MongoDB v6+ running locally or remote connection
+- Node.js v18 or higher
+- MongoDB v6 or higher (local or Atlas)
 - npm or yarn package manager
-- Git for version control
 
 ### Step 1: Clone Repository
 ```bash
-git clone https://github.com/yourusername/dayflow-hrms.git
-cd dayflow-hrms
+git clone https://github.com/OMCHOKSI108/dayflow-workforce-odoo-gcet.git
+cd dayflow-workforce-odoo-gcet
 ```
 
 ### Step 2: Backend Setup
@@ -225,13 +268,12 @@ cd backend
 npm install
 ```
 
-Create `.env` file in `backend/` directory:
+Create `.env` file:
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/dayflow
-JWT_SECRET=your_super_secret_jwt_key_change_this
-GROQ_API_KEY=your_groq_api_key_here
-NODE_ENV=development
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+GROQ_API_KEY=your_groq_api_key
 ```
 
 ### Step 3: Frontend Setup
@@ -240,262 +282,165 @@ cd ../frontend
 npm install
 ```
 
-### Step 4: Database Seeding (Optional)
+### Step 4: Run Application
 ```bash
-cd ../backend
-node seeder.js
-```
-This creates 50 sample employees with realistic data for testing.
-
----
-
-##  Configuration
-
-### Environment Variables
-
-#### Backend (.env)
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `PORT` | Server port number | 5000 | No |
-| `MONGO_URI` | MongoDB connection string | - | Yes |
-| `JWT_SECRET` | Secret key for JWT signing | - | Yes |
-| `GROQ_API_KEY` | Groq AI API key | - | No* |
-| `NODE_ENV` | Environment mode | development | No |
-
-*Without GROQ_API_KEY, chatbot uses fallback heuristic responses.
-
-### Database Configuration
-```javascript
-// backend/config/db.js
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-```
-
-### CORS Configuration
-```javascript
-// backend/server.js
-app.use(cors({
-  origin: 'http://localhost:5173', // Frontend URL
-  credentials: true
-}));
-```
-
----
-
-##  Usage
-
-### Start Backend Server
-```bash
+# Terminal 1 - Backend
 cd backend
-npm start        # Production mode
-npm run dev      # Development mode with nodemon
-```
-Server runs at: `http://localhost:5000`
+npm run dev
 
-### Start Frontend Development
-```bash
+# Terminal 2 - Frontend
 cd frontend
 npm run dev
 ```
-Application runs at: `http://localhost:5173`
 
-### Build for Production
-```bash
-cd frontend
-npm run build
-```
-Optimized files in `frontend/dist/`
+### Access Points
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:5000
 
 ---
 
-##  API Documentation
+## API Documentation
 
-Complete API documentation available at: [docs/backend_api.txt](docs/backend_api.txt)
-
-### Quick Reference
-
-#### Authentication
-```http
-POST /api/users/login          # Login with email/empCode
-POST /api/users                # Register organization
+### Authentication
+```
+POST /api/users/login     - User login
+POST /api/users           - Register organization
 ```
 
-#### User Management
-```http
-GET    /api/users              # List all users (Admin)
-POST   /api/users/create       # Create employee (Admin)
-GET    /api/users/profile      # Get own profile
-PUT    /api/users/profile      # Update own profile
-GET    /api/users/:id          # Get user by ID (Admin)
-PUT    /api/users/:id          # Update user (Admin)
-DELETE /api/users/:id          # Delete user (Admin)
+### User Management
+```
+GET    /api/users         - List all users (Admin)
+POST   /api/users/create  - Create employee (Admin)
+GET    /api/users/profile - Get own profile
+PUT    /api/users/profile - Update own profile
+GET    /api/users/:id     - Get user by ID (Admin)
+PUT    /api/users/:id     - Update user (Admin)
+DELETE /api/users/:id     - Delete user (Admin)
 ```
 
-#### Attendance
-```http
-POST   /api/attendance/checkin     # Clock in
-POST   /api/attendance/checkout    # Clock out
-GET    /api/attendance/my          # My attendance
-GET    /api/attendance             # All attendance (Admin)
-PUT    /api/attendance/:id         # Edit record (Admin)
-DELETE /api/attendance/:id         # Delete record (Admin)
+### Attendance
+```
+POST   /api/attendance/checkin  - Clock in
+POST   /api/attendance/checkout - Clock out
+GET    /api/attendance/my       - My attendance
+GET    /api/attendance          - All attendance (Admin)
+PUT    /api/attendance/:id      - Edit record (Admin)
+DELETE /api/attendance/:id      - Delete record (Admin)
 ```
 
-#### Leaves
-```http
-POST   /api/leaves                 # Apply leave
-GET    /api/leaves/my              # My leaves
-GET    /api/leaves                 # All leaves (Admin)
-PUT    /api/leaves/:id             # Approve/Reject (Admin)
-DELETE /api/leaves/:id             # Delete request
+### Leaves
+```
+POST   /api/leaves      - Apply leave
+GET    /api/leaves/my   - My leaves
+GET    /api/leaves      - All leaves (Admin)
+PUT    /api/leaves/:id  - Approve/Reject (Admin)
+DELETE /api/leaves/:id  - Delete request
 ```
 
-#### Announcements
-```http
-POST   /api/announcements          # Create (Admin/HR)
-GET    /api/announcements          # Get all
-PUT    /api/announcements/:id      # Update (Admin/HR)
-DELETE /api/announcements/:id      # Delete (Admin/HR)
+### Announcements
+```
+POST   /api/announcements     - Create (Admin/HR)
+GET    /api/announcements     - Get all
+PUT    /api/announcements/:id - Update (Admin/HR)
+DELETE /api/announcements/:id - Delete (Admin/HR)
 ```
 
-#### AI Chat
-```http
-POST   /api/chat                   # Send message
+### AI Chat
 ```
+POST /api/chat - Send message to AI assistant
+```
+
+Full documentation: [docs/backend_api.txt](docs/backend_api.txt)
+
+Postman Collection: [docs/postman_api.json](docs/postman_api.json)
 
 ---
 
-##  Screenshots
+## Security Features
 
-### Dashboard
-![Dashboard](docs/screenshots/dashboard.png)
-*Real-time metrics, activity feed, and announcements*
-
-### Employee Directory
-![Employees](docs/screenshots/employees.png)
-*Searchable team directory with status indicators*
-
-### Attendance Tracking
-![Attendance](docs/screenshots/attendance.png)
-*Check-in/out with work hours calculation*
-
-### Leave Management
-![Leaves](docs/screenshots/leaves.png)
-*Leave application and approval workflow*
-
-### Profile Management
-![Profile](docs/screenshots/profile.png)
-*Comprehensive employee profile editor*
-
----
-
-##  Security
-
-### Implemented Security Measures
-
- **Authentication**
+### Authentication
 - JWT-based token authentication (30-day expiry)
 - Bcrypt password hashing (10 salt rounds)
-- Secure password validation (min 6 characters)
+- Secure password validation (minimum 6 characters)
 
- **Authorization**
+### Authorization
 - Role-based access control (Admin, HR, Employee)
 - Company-based data isolation
 - Protected routes with middleware verification
 
- **Data Protection**
+### Data Protection
 - Company-specific filtering on all queries
 - Ownership verification before updates/deletes
 - Prevention of role escalation attacks
 - Input validation and sanitization
 
- **API Security**
+### API Security
 - CORS protection with origin whitelist
 - Rate limiting on sensitive endpoints
-- SQL injection prevention via Mongoose
+- NoSQL injection prevention via Mongoose
 - XSS protection through React escaping
 
-### Security Best Practices
+---
 
-```javascript
-//  DO: Use environment variables
-const secret = process.env.JWT_SECRET;
+## Future Roadmap
 
-//  DON'T: Hardcode secrets
-const secret = "mysecretkey123";
-
-//  DO: Validate ownership
-if (resource.companyName !== user.companyName) {
-  return res.status(403).json({ message: 'Not authorized' });
-}
-
-//  DON'T: Trust user input
-const data = await Model.find({});  // Returns ALL data
-```
+| Phase | Features | Status |
+|-------|----------|--------|
+| v1.0 | Core HRMS + AI Chat | Complete |
+| v1.1 | Task Management | Complete |
+| v1.2 | Announcements System | Complete |
+| v2.0 | Mobile App (React Native) | Planned |
+| v2.1 | Biometric Integration | Planned |
+| v2.2 | Advanced Analytics | Planned |
+| v3.0 | Odoo ERP Integration | Planned |
 
 ---
 
-##  Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. **Fork the repository**
-2. **Create feature branch** (`git checkout -b feature/AmazingFeature`)
-3. **Commit changes** (`git commit -m 'Add AmazingFeature'`)
-4. **Push to branch** (`git push origin feature/AmazingFeature`)
-5. **Open Pull Request**
-
-### Coding Standards
-- Follow ESLint configuration
-- Write meaningful commit messages
-- Add comments for complex logic
-- Update documentation for new features
-- Test thoroughly before submitting
-
----
-
-##  License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-##  Team
+## Acknowledgments
 
-**Project Lead:** Your Name  
-**Frontend Developer:** Your Name  
-**Backend Developer:** Your Name  
-**UI/UX Designer:** Your Name  
-
----
-
-##  Acknowledgments
-
-- **Odoo** - Design inspiration
-- **Groq** - AI model provider
+- **Odoo** - Design inspiration and philosophy
+- **Groq** - AI model provider (LLaMA 3.3 70B)
 - **MongoDB** - Database solution
-- **React Team** - Frontend framework
-- **Node.js Community** - Backend ecosystem
+- **Vercel** - Frontend hosting
+- **Render** - Backend hosting
 
 ---
 
-##  Support
-
-For issues, questions, or feature requests:
--  Email: OMCHOKSI99@GMAIL.COM
--  Issues: [GitHub Issues](https://github.com/OMCHOKSI108/dayflow-workforce-odoo-gcet/issues)
--  Discussions: [GitHub Discussions](https://github.com/OMCHOKSI108/dayflow-workforce-odoo-gcet/discussions)
-
----
+## Team
 
 <div align="center">
 
-**Made with  by Dayflow Team**
+### Built with dedication by Team Dayflow
 
- Star us on GitHub  it motivates us a lot!
+| # | Name | Role |
+|:-:|------|------|
+| 1 | **Om Choksi** | Team Lead & Backend Developer |
+| 2 | **Hari Patel** | Frontend Developer |
+| 3 | **Dev Patel** | UI/UX & Database |
+| 4 | **Brijesh Rakhasiya** | API Integration & Testing |
 
-[ Back to Top](#-dayflow---human-resource-management-system-hrms)
+---
+
+### Contact
+
+**Email:** OMCHOKSI99@GMAIL.COM
+
+**GitHub:** [OMCHOKSI108/dayflow-workforce-odoo-gcet](https://github.com/OMCHOKSI108/dayflow-workforce-odoo-gcet)
+
+**Live Demo:** [https://dayflow-workforce-odoo-gcet.vercel.app/](https://dayflow-workforce-odoo-gcet.vercel.app/)
+
+---
+
+**Made with dedication for Odoo Hackathon 2026**
+
+If you find this project useful, please consider giving it a star!
+
+[Back to Top](#dayflow---human-resource-management-system)
 
 </div>

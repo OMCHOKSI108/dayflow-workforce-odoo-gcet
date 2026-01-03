@@ -3,6 +3,7 @@ import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, TrendingUp, Users, Calendar, Clock, Activity, Flame, Rocket, Plus, X, Trash2 } from 'lucide-react';
+import { API_URL } from '../config/api';
 
 const Dashboard = () => {
     const { user } = useContext(AuthContext);
@@ -24,6 +25,9 @@ const Dashboard = () => {
                 setStats(data);
             } catch (error) {
                 console.error("Error fetching stats:", error);
+                if (error.response?.status === 401) {
+                    alert('Session expired. Please login again.');
+                }
             }
         };
         
@@ -34,11 +38,16 @@ const Dashboard = () => {
                 setAnnouncements(data);
             } catch (error) {
                 console.error("Error fetching announcements:", error);
+                if (error.response?.status === 401) {
+                    // Will be handled by axios interceptor
+                }
             }
         };
         
-        fetchStats();
-        fetchAnnouncements();
+        if (user && user.token) {
+            fetchStats();
+            fetchAnnouncements();
+        }
     }, [user]);
     
     const handleCreateAnnouncement = async (e) => {
@@ -50,10 +59,12 @@ const Dashboard = () => {
             setNewAnnouncement({ title: '', message: '', type: 'info' });
             
             // Refresh announcements
-            const { data } = await axios.get('http://localhost:5000/api/announcements', config);
+            const { data } = await axios.get(`${API_URL}/api/announcements`, config);
             setAnnouncements(data);
         } catch (error) {
-            alert(error.response?.data?.message || 'Failed to create announcement');
+            const errorMsg = error.response?.data?.message || 'Failed to create announcement';
+            alert(errorMsg);
+            console.error('Announcement creation error:', error.response?.data);
         }
     };
     
