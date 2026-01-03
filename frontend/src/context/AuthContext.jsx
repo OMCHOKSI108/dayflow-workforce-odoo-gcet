@@ -14,6 +14,26 @@ export const AuthProvider = ({ children }) => {
             setUser(userInfo);
         }
         setLoading(false);
+
+        // Add axios interceptor to handle 401 errors
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response?.status === 401) {
+                    // Token expired or invalid, logout user
+                    localStorage.removeItem('userInfo');
+                    setUser(null);
+                    if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+                        window.location.href = '/login';
+                    }
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+        };
     }, []);
 
     const login = async (email, password) => {
@@ -30,6 +50,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('userInfo');
         setUser(null);
+        window.location.href = '/login';
     };
 
     const [attendanceStatus, setAttendanceStatus] = useState('Checked Out');

@@ -25,6 +25,9 @@ const Dashboard = () => {
                 setStats(data);
             } catch (error) {
                 console.error("Error fetching stats:", error);
+                if (error.response?.status === 401) {
+                    alert('Session expired. Please login again.');
+                }
             }
         };
         
@@ -35,11 +38,16 @@ const Dashboard = () => {
                 setAnnouncements(data);
             } catch (error) {
                 console.error("Error fetching announcements:", error);
+                if (error.response?.status === 401) {
+                    // Will be handled by axios interceptor
+                }
             }
         };
         
-        fetchStats();
-        fetchAnnouncements();
+        if (user && user.token) {
+            fetchStats();
+            fetchAnnouncements();
+        }
     }, [user]);
     
     const handleCreateAnnouncement = async (e) => {
