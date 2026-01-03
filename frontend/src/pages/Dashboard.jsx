@@ -3,6 +3,7 @@ import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, TrendingUp, Users, Calendar, Clock, Activity, Flame, Rocket, Plus, X, Trash2 } from 'lucide-react';
+import { API_URL } from '../config/api';
 
 const Dashboard = () => {
     const { user } = useContext(AuthContext);

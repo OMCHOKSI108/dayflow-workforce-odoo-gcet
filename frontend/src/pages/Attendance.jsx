@@ -3,6 +3,7 @@ import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import { Search, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config/api';
 
 const Attendance = () => {
     const { user, fetchAttendanceStatus } = useContext(AuthContext);

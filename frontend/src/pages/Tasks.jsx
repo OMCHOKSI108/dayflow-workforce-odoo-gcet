@@ -3,6 +3,7 @@ import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { CheckCircle, Clock, AlertCircle, Calendar, User, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
+import { API_URL } from '../config/api';
 
 const Tasks = () => {
     const { user } = useContext(AuthContext);
