@@ -21,11 +21,11 @@ const Login = () => {
     };
 
     return (
-        <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f3f4f6' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f3f4f6', padding: '1rem' }}>
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="card"
+                className="card mobile-p-md"
                 style={{ width: '100%', maxWidth: '400px', padding: '2.5rem' }}
             >
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>

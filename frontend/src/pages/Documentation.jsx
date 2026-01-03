@@ -396,6 +396,215 @@ POST   /api/chat
                     </div>
                 </section>
 
+                {/* Backend Architecture & API Overview */}
+                <section style={{ padding: '4rem 2rem', background: '#fafafa' }}>
+                    <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            style={{ fontSize: '3rem', fontWeight: 'bold', color: '#111827', marginBottom: '3rem', textAlign: 'center' }}
+                        >
+                            Backend <span style={{ color: 'var(--primary-color)' }}>Architecture</span>
+                        </motion.h2>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginBottom: '3rem' }} className="mobile-grid-1">
+                            {/* Tech Stack */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.1 }}
+                                style={{
+                                    background: 'white',
+                                    padding: '2.5rem',
+                                    borderRadius: '16px',
+                                    border: '3px solid #e9d5ff',
+                                    boxShadow: '0 4px 20px rgba(123, 31, 162, 0.1)'
+                                }}
+                            >
+                                <h3 style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#111827', marginBottom: '1.5rem' }}>
+                                    Technology Stack
+                                </h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    {[
+                                        { label: 'Runtime', value: 'Node.js 22.x' },
+                                        { label: 'Framework', value: 'Express.js 5.x' },
+                                        { label: 'Database', value: 'MongoDB 6.x with Mongoose ODM' },
+                                        { label: 'Authentication', value: 'JWT (30-day validity)' },
+                                        { label: 'Password Security', value: 'Bcrypt (10 salt rounds)' },
+                                        { label: 'AI Integration', value: 'Groq LLaMA 3.3 70B Versatile' },
+                                        { label: 'CORS', value: 'Enabled for cross-origin requests' },
+                                        { label: 'Environment', value: 'dotenv for config management' }
+                                    ].map((item, idx) => (
+                                        <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem', background: '#faf5ff', borderRadius: '8px' }}>
+                                            <span style={{ fontWeight: '600', color: '#374151' }}>{item.label}:</span>
+                                            <span style={{ color: 'var(--primary-color)', fontWeight: '500' }}>{item.value}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+
+                            {/* Architecture Patterns */}
+                            <motion.div
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.2 }}
+                                style={{
+                                    background: 'white',
+                                    padding: '2.5rem',
+                                    borderRadius: '16px',
+                                    border: '3px solid #e9d5ff',
+                                    boxShadow: '0 4px 20px rgba(123, 31, 162, 0.1)'
+                                }}
+                            >
+                                <h3 style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#111827', marginBottom: '1.5rem' }}>
+                                    Architecture Patterns
+                                </h3>
+                                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    {[
+                                        'MVC (Model-View-Controller) Pattern',
+                                        'RESTful API Design',
+                                        'Middleware Chain Architecture',
+                                        'Role-Based Access Control (RBAC)',
+                                        'Multi-Tenant Data Isolation',
+                                        'Retrieval-Augmented Generation (RAG) for AI',
+                                        'Async/Await Error Handling',
+                                        'Schema Validation with Mongoose'
+                                    ].map((pattern, idx) => (
+                                        <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                                            <CheckCircle size={20} color="var(--primary-color)" style={{ marginTop: '2px', flexShrink: 0 }} />
+                                            <span style={{ fontSize: '1rem', color: '#374151', lineHeight: '1.6', fontWeight: '500' }}>
+                                                {pattern}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </motion.div>
+                        </div>
+
+                        {/* API Overview */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            style={{
+                                background: 'white',
+                                padding: '3rem',
+                                borderRadius: '16px',
+                                border: '3px solid #e9d5ff',
+                                boxShadow: '0 4px 20px rgba(123, 31, 162, 0.1)'
+                            }}
+                        >
+                            <h3 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827', marginBottom: '2rem' }}>
+                                Complete API Reference
+                            </h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }} className="mobile-grid-1">
+                                {[
+                                    {
+                                        category: 'Authentication',
+                                        endpoints: [
+                                            'POST /api/users/login',
+                                            'POST /api/users (register)'
+                                        ]
+                                    },
+                                    {
+                                        category: 'User Management',
+                                        endpoints: [
+                                            'GET /api/users (Admin)',
+                                            'GET /api/users/profile',
+                                            'PUT /api/users/profile',
+                                            'POST /api/users/create (Admin)',
+                                            'GET /api/users/:id (Admin)',
+                                            'PUT /api/users/:id (Admin)',
+                                            'DELETE /api/users/:id (Admin)',
+                                            'GET /api/users/dashboard/stats'
+                                        ]
+                                    },
+                                    {
+                                        category: 'Attendance',
+                                        endpoints: [
+                                            'POST /api/attendance/checkin',
+                                            'POST /api/attendance/checkout',
+                                            'GET /api/attendance/my',
+                                            'GET /api/attendance (Admin)',
+                                            'PUT /api/attendance/:id (Admin)',
+                                            'DELETE /api/attendance/:id (Admin)'
+                                        ]
+                                    },
+                                    {
+                                        category: 'Leave Management',
+                                        endpoints: [
+                                            'POST /api/leaves',
+                                            'GET /api/leaves/my',
+                                            'GET /api/leaves (Admin)',
+                                            'PUT /api/leaves/:id (Admin)',
+                                            'DELETE /api/leaves/:id'
+                                        ]
+                                    },
+                                    {
+                                        category: 'Task Management',
+                                        endpoints: [
+                                            'POST /api/tasks (Admin)',
+                                            'GET /api/tasks',
+                                            'GET /api/tasks/my',
+                                            'GET /api/tasks/:id',
+                                            'PUT /api/tasks/:id',
+                                            'DELETE /api/tasks/:id (Admin)',
+                                            'POST /api/tasks/:id/comment'
+                                        ]
+                                    },
+                                    {
+                                        category: 'Announcements',
+                                        endpoints: [
+                                            'POST /api/announcements (Admin)',
+                                            'GET /api/announcements',
+                                            'PUT /api/announcements/:id (Admin)',
+                                            'DELETE /api/announcements/:id (Admin)'
+                                        ]
+                                    },
+                                    {
+                                        category: 'AI Chat',
+                                        endpoints: [
+                                            'POST /api/chat'
+                                        ]
+                                    },
+                                    {
+                                        category: 'SuperAdmin',
+                                        endpoints: [
+                                            'GET /api/superadmin/companies',
+                                            'GET /api/superadmin/admins',
+                                            'GET /api/superadmin/company/:id',
+                                            'GET /api/superadmin/stats',
+                                            'DELETE /api/superadmin/company/:id',
+                                            'PUT /api/superadmin/user/:id'
+                                        ]
+                                    }
+                                ].map((group, idx) => (
+                                    <div key={idx} style={{ background: '#faf5ff', padding: '1.5rem', borderRadius: '12px' }}>
+                                        <h4 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--primary-color)', marginBottom: '1rem' }}>
+                                            {group.category}
+                                        </h4>
+                                        <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                            {group.endpoints.map((endpoint, i) => (
+                                                <li key={i} style={{ fontSize: '0.85rem', color: '#374151', fontFamily: 'monospace', lineHeight: '1.5' }}>
+                                                    {endpoint}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                            <div style={{ marginTop: '2rem', padding: '1.5rem', background: '#111827', borderRadius: '12px' }}>
+                                <p style={{ color: '#e2e8f0', fontSize: '1rem', marginBottom: '0.5rem' }}>
+                                    <strong>Base URL:</strong> <code style={{ color: '#a78bfa', background: '#1e293b', padding: '0.25rem 0.5rem', borderRadius: '4px' }}>http://localhost:5000</code> (development)
+                                </p>
+                                <p style={{ color: '#e2e8f0', fontSize: '1rem' }}>
+                                    <strong>Production:</strong> <code style={{ color: '#a78bfa', background: '#1e293b', padding: '0.25rem 0.5rem', borderRadius: '4px' }}>https://your-app.onrender.com</code>
+                                </p>
+                            </div>
+                        </motion.div>
+                    </div>
+                </section>
+
                 {/* Features Documentation */}
                 <section style={{ padding: '4rem 2rem 8rem', background: 'rgba(255,255,255,0.95)' }}>
                     <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
@@ -437,7 +646,7 @@ POST   /api/chat
                                     </div>
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }} className="mobile-grid-1">
                                     {/* Details */}
                                     <div>
                                         <h3 style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#111827', marginBottom: '1rem' }}>

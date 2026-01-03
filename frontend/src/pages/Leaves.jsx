@@ -176,7 +176,8 @@ const Leaves = () => {
 
             {/* Leaves Table */}
             <div className="card" style={{ padding: 0, overflow: 'hidden', borderRadius: '2px', border: '1px solid #e5e7eb' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <div className="table-container" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '700px' }}>
                     <thead style={{ background: '#f8f9fa', borderBottom: '1px solid #e9ecef' }}>
                         <tr>
                             <th style={{ padding: '1rem', textAlign: 'left', color: '#495057', fontSize: '0.85rem', fontWeight: '600', textTransform: 'uppercase' }}>Employee</th>
@@ -240,8 +241,7 @@ const Leaves = () => {
                             </tr>
                         )}
                     </tbody>
-                </table>
-            </div>
+                </table>                </div>            </div>
 
             {/* New Leave Modal */}
             <AnimatePresence>

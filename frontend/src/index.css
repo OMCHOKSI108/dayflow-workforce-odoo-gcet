@@ -47,6 +47,12 @@ body {
   zoom: 0.9;
 }
 
+@media (max-width: 768px) {
+  body {
+    zoom: 1;
+  }
+}
+
 #root {
   max-width: none;
   margin: 0;
@@ -273,5 +279,64 @@ button {
 
   h1 {
     font-size: 1.5rem !important;
+  }
+  
+  /* Table Scrolling */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 600px;
+  }
+}
+
+/* Additional Mobile Responsive Utilities */
+@media (max-width: 768px) {
+  /* Hide text labels on small screens */
+  .hide-mobile {
+    display: none !important;
+  }
+  
+  /* Mobile-friendly spacing */
+  .mobile-p-sm {
+    padding: 0.5rem !important;
+  }
+  
+  .mobile-p-md {
+    padding: 1rem !important;
+  }
+  
+  /* Mobile grid adjustments */
+  .mobile-grid-1 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .mobile-grid-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  /* Mobile flex adjustments */
+  .mobile-flex-col {
+    flex-direction: column !important;
+  }
+  
+  .mobile-w-full {
+    width: 100% !important;
+  }
+  
+  /* Mobile text sizing */
+  .mobile-text-sm {
+    font-size: 0.875rem !important;
+  }
+  
+  .mobile-text-xs {
+    font-size: 0.75rem !important;
+  }
+  
+  /* Mobile gaps */
+  .mobile-gap-sm {
+    gap: 0.5rem !important;
   }
 }

@@ -83,15 +83,15 @@ const Profile = () => {
     return (
         <div>
             {/* HEADER */}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", alignItems: "center" }} className="mobile-flex-col">
                 <h2>{id ? "Employee Profile" : "My Profile"}</h2>
 
                 {!isEditing ? (
-                    <button className="btn btn-primary" onClick={() => setIsEditing(true)}>
+                    <button className="btn btn-primary mobile-w-full" onClick={() => setIsEditing(true)}>
                         Edit Profile
                     </button>
                 ) : (
-                    <div>
+                    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }} className="mobile-w-full mobile-gap-sm">
                         <button
                             className="btn btn-secondary"
                             onClick={() => {

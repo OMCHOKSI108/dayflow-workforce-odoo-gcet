@@ -90,12 +90,12 @@ const Employees = () => {
     return (
         <div>
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }} className="mobile-flex-col">
                 <div>
                     <h1 style={{ fontSize: '2rem', fontWeight: '800', color: '#111827', margin: 0 }}>Team Directory</h1>
                     <p style={{ color: '#374151', marginTop: '0.2rem', fontWeight: '500' }}>Manage your workforce efficiently.</p>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }} className="mobile-w-full mobile-gap-sm">
                     <button className="btn btn-secondary" onClick={handleExport} style={{ border: '1px solid #d1d5db', borderRadius: '2px', color: '#374151', fontWeight: '600' }}>
                         <Download size={16} /> Export to Excel
                     </button>

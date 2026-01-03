@@ -1,9 +1,10 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, User, Calendar, DollarSign, LogOut, Briefcase, Users, PieChart, ChevronDown, CheckCircle, CheckSquare } from 'lucide-react';
+import { Home, User, Calendar, DollarSign, LogOut, Briefcase, Users, PieChart, ChevronDown, CheckCircle, CheckSquare, Menu, X } from 'lucide-react';
 import { useContext, useState, useEffect, useRef } from 'react';
 import AuthContext from '../context/AuthContext';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../config/api';
 
 const Sidebar = () => {
     const { user, logout, attendanceStatus, fetchAttendanceStatus } = useContext(AuthContext);
@@ -11,7 +12,15 @@ const Sidebar = () => {
     const navigate = useNavigate();
     const [isAttendanceOpen, setIsAttendanceOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const isActive = (path) => location.pathname === path || (path !== '/dashboard' && location.pathname.startsWith(path));
 
@@ -49,42 +58,76 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="navbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'nowrap', gap: '1rem' }}>
+        <div className="navbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: isMobile ? 'wrap' : 'nowrap', gap: '1rem', position: 'relative' }}>
             {/* Brand */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: isMobile ? '1' : 'initial' }}>
                 <div style={{ background: 'white', borderRadius: '6px', padding: '4px', display: 'flex', alignItems: 'center' }}>
                     <img src="/logo.png" alt="Dayflow" style={{ height: '24px', width: '24px', objectFit: 'contain' }} />
                 </div>
                 <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'white', letterSpacing: '0.5px' }}>Dayflow</span>
             </div>
 
-            {/* Navigation Links - Center */}
-            <nav style={{ display: 'flex', gap: '0.5rem', flex: 1, justifyContent: 'center', paddingLeft: '2rem' }}>
-                {links
-                    .filter(link => !link.adminOnly || (user.role === 'Admin' || user.role === 'HR'))
-                    .map((link) => (
-                    <Link
-                        key={link.path}
-                        to={link.path}
+            {/* Mobile Menu Button */}
+            {isMobile && (
+                <button
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    style={{ background: 'rgba(255,255,255,0.1)', border: 'none', padding: '0.5rem', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                >
+                    {isMobileMenuOpen ? <X size={24} color="white" /> : <Menu size={24} color="white" />}
+                </button>
+            )}
+
+            {/* Navigation Links - Desktop or Mobile Drawer */}
+            <AnimatePresence>
+                {(!isMobile || isMobileMenuOpen) && (
+                    <motion.nav
+                        initial={isMobile ? { opacity: 0, height: 0 } : false}
+                        animate={isMobile ? { opacity: 1, height: 'auto' } : false}
+                        exit={isMobile ? { opacity: 0, height: 0 } : false}
                         style={{
                             display: 'flex',
-                            alignItems: 'center',
+                            flexDirection: isMobile ? 'column' : 'row',
                             gap: '0.5rem',
-                            padding: '0.5rem 1rem',
-                            borderRadius: '4px',
-                            backgroundColor: isActive(link.path) ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
-                            color: 'white',
-                            fontSize: '0.9rem',
-                            fontWeight: isActive(link.path) ? '600' : '400',
-                            transition: 'all 0.15s ease',
-                            whiteSpace: 'nowrap'
+                            flex: isMobile ? 'none' : 1,
+                            justifyContent: isMobile ? 'flex-start' : 'center',
+                            paddingLeft: isMobile ? '0' : '2rem',
+                            width: isMobile ? '100%' : 'auto',
+                            order: isMobile ? 3 : 'initial',
+                            background: isMobile ? 'rgba(0,0,0,0.1)' : 'transparent',
+                            padding: isMobile ? '1rem' : '0 0 0 2rem',
+                            borderRadius: isMobile ? '8px' : '0',
+                            marginTop: isMobile ? '1rem' : '0'
                         }}
                     >
-                        <link.icon size={16} />
-                        {link.label}
-                    </Link>
-                ))}
-            </nav>
+                        {links
+                            .filter(link => !link.adminOnly || (user.role === 'Admin' || user.role === 'HR'))
+                            .map((link) => (
+                            <Link
+                                key={link.path}
+                                to={link.path}
+                                onClick={() => isMobile && setIsMobileMenuOpen(false)}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '4px',
+                                    backgroundColor: isActive(link.path) ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                                    color: 'white',
+                                    fontSize: '0.9rem',
+                                    fontWeight: isActive(link.path) ? '600' : '400',
+                                    transition: 'all 0.15s ease',
+                                    whiteSpace: 'nowrap',
+                                    width: isMobile ? '100%' : 'auto'
+                                }}
+                            >
+                                <link.icon size={16} />
+                                {link.label}
+                            </Link>
+                        ))}
+                    </motion.nav>
+                )}
+            </AnimatePresence>
 
             {/* Right Side Widgets (User & Attendance) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -100,7 +143,7 @@ const Sidebar = () => {
                             background: attendanceStatus === 'Checked In' ? '#4ade80' : '#f87171',
                             boxShadow: attendanceStatus === 'Checked In' ? '0 0 8px #4ade80' : 'none'
                         }}></div>
-                        <span style={{ color: 'white', fontSize: '0.8rem', fontWeight: '500', display: window.innerWidth < 768 ? 'none' : 'inline' }}>
+                        <span style={{ color: 'white', fontSize: '0.8rem', fontWeight: '500', display: isMobile ? 'none' : 'inline' }}>
                             {attendanceStatus}
                         </span>
                     </button>

@@ -32,7 +32,7 @@ const Home = () => {
         <div style={{ minHeight: '100vh', background: 'white' }}>
             {/* Navbar */}
             <nav style={{ 
-                padding: '1.25rem 3rem', 
+                padding: '1.25rem 2rem', 
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center', 
@@ -42,13 +42,15 @@ const Home = () => {
                 top: 0, 
                 zIndex: 100,
                 borderBottom: '1px solid #e5e7eb',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-            }}>
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                flexWrap: 'wrap',
+                gap: '1rem'
+            }} className="mobile-p-md">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <img src="/logo.png" alt="Dayflow Logo" style={{ height: '40px' }} />
                     <h1 style={{ fontSize: '1.6rem', fontWeight: 'bold', color: 'var(--primary-color)' }}>Dayflow</h1>
                 </div>
-                <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }} className="mobile-gap-sm">
                     <Link to="/login" style={{ color: '#374151', fontWeight: '500', textDecoration: 'none' }}>Sign In</Link>
                     <Link to="/register" className="btn btn-primary" style={{ padding: '0.65rem 1.75rem', borderRadius: '8px', fontWeight: '600' }}>
                         Get Started Free <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
@@ -75,7 +77,7 @@ const Home = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         style={{ 
-                            fontSize: '5rem', 
+                            fontSize: 'clamp(2.5rem, 8vw, 5rem)', 
                             fontWeight: '900', 
                             lineHeight: '1.1', 
                             marginBottom: '2rem', 
@@ -94,13 +96,14 @@ const Home = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
                         style={{ 
-                            fontSize: '1.35rem', 
+                            fontSize: 'clamp(1rem, 2.5vw, 1.35rem)', 
                             color: '#6b7280', 
                             marginBottom: '3rem', 
                             lineHeight: '1.7', 
                             maxWidth: '750px', 
                             margin: '0 auto 3.5rem auto',
-                            fontWeight: '400'
+                            fontWeight: '400',
+                            padding: '0 1rem'
                         }}
                     >
                         The modern, AI-powered HRMS platform that scales with your business. 
@@ -145,9 +148,9 @@ const Home = () => {
                         style={{ 
                             marginTop: '5rem', 
                             display: 'grid', 
-                            gridTemplateColumns: 'repeat(4, 1fr)', 
-                            gap: '3rem',
-                            padding: '2.5rem 3rem',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
+                            gap: '2rem',
+                            padding: '2.5rem 2rem',
                             background: 'white',
                             borderRadius: '16px',
                             border: '1px solid #e5e7eb',
@@ -177,7 +180,7 @@ const Home = () => {
                             Comprehensive HR tools designed for modern teams
                         </p>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }} className="mobile-grid-1">
                         {features.map((feature, idx) => (
                             <FeatureCard key={idx} {...feature} delay={idx * 0.1} />
                         ))}
@@ -196,7 +199,7 @@ const Home = () => {
                             Built for performance, security, and scale
                         </p>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '3rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }} className="mobile-grid-1">
                         {benefits.map((benefit, idx) => (
                             <BenefitCard key={idx} {...benefit} delay={idx * 0.15} />
                         ))}
@@ -211,8 +214,8 @@ const Home = () => {
                 textAlign: 'center',
                 color: 'white'
             }}>
-                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <h2 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
+                <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 1rem' }}>
+                    <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 'bold', marginBottom: '1.5rem' }}>
                         Ready to Transform Your HR?
                     </h2>
                     <p style={{ fontSize: '1.3rem', marginBottom: '3rem', opacity: 0.9 }}>
@@ -243,7 +246,7 @@ const Home = () => {
                 color: '#9ca3af' 
             }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '3rem', marginBottom: '3rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', marginBottom: '3rem' }} className="mobile-grid-1">
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
                                 <img src="/logo.png" alt="Dayflow" style={{ height: '36px' }} />

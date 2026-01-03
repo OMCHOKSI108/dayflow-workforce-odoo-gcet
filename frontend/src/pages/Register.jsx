@@ -4,6 +4,7 @@ import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { Upload, ArrowRight } from 'lucide-react';
+import { API_URL } from '../config/api';
 
 const Register = () => {
     const { login } = useContext(AuthContext);
@@ -57,7 +58,7 @@ const Register = () => {
 
         try {
             // Register
-            await axios.post('http://localhost:5000/api/users', {
+            await axios.post(`${API_URL}/api/users`, {
                 name: formData.name.trim(),
                 email: formData.email.toLowerCase().trim(),
                 password: formData.password,
@@ -75,11 +76,11 @@ const Register = () => {
     };
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa', padding: '1rem' }}>
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="card"
+                className="card mobile-p-md"
                 style={{ width: '100%', maxWidth: '500px', padding: '2.5rem' }}
             >
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>

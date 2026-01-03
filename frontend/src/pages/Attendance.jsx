@@ -74,15 +74,15 @@ const Attendance = () => {
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }} className="mobile-flex-col">
                 <div>
                     <h1 style={{ fontSize: '2rem', fontWeight: '800', color: '#111827', margin: 0 }}>Attendance</h1>
                     <p style={{ color: '#374151', marginTop: '0.2rem', fontWeight: '500' }}>Track your daily work hours.</p>
                 </div>
 
                 {/* Stats Widget */}
-                <div style={{ display: 'flex', borderRadius: '2px', overflow: 'hidden', border: '1px solid #1f2937', background: 'white' }}>
-                    <div style={{ padding: '0.8rem 1.5rem', borderRight: '1px solid #e5e7eb' }}>
+                <div style={{ display: 'flex', borderRadius: '2px', overflow: 'hidden', border: '1px solid #1f2937', background: 'white', flexWrap: 'wrap' }}>
+                    <div style={{ padding: '0.8rem 1.5rem', borderRight: '1px solid #e5e7eb' }} className="mobile-p-sm">
                         <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#6b7280', fontWeight: '700' }}>Days Present</span>
                         <div style={{ fontWeight: '800', fontSize: '1.25rem', color: '#059669' }}>{stats.present}</div>
                     </div>
@@ -98,8 +98,8 @@ const Attendance = () => {
             </div>
 
             {/* Check In / Check Out Area */}
-            <div className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', padding: '1.5rem', background: '#ffffff', borderRadius: '2px', border: '1px solid #1f2937', boxShadow: 'none' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div className="card mobile-p-md" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', padding: '1.5rem', background: '#ffffff', borderRadius: '2px', border: '1px solid #1f2937', boxShadow: 'none', flexWrap: 'wrap', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }} className="mobile-gap-sm">
                     <div style={{ padding: '12px', background: '#f3f4f6', borderRadius: '2px', color: '#111827', border: '1px solid #e5e7eb' }}>
                         <Calendar size={24} />
                     </div>
@@ -120,12 +120,12 @@ const Attendance = () => {
                         </motion.span>
                     )}
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }} className="mobile-w-full mobile-gap-sm">
                     <motion.button
                         whileHover={{ y: -2 }}
                         whileTap={{ y: 0 }}
                         onClick={handleCheckIn}
-                        className="btn"
+                        className="btn mobile-w-full"
                         style={{ minWidth: '140px', padding: '0.8rem 1.5rem', fontSize: '1rem', background: '#059669', color: 'white', borderRadius: '2px', border: '1px solid #047857', fontWeight: '700', textTransform: 'uppercase' }}
                     >
                         Check In
@@ -134,7 +134,7 @@ const Attendance = () => {
                         whileHover={{ y: -2 }}
                         whileTap={{ y: 0 }}
                         onClick={handleCheckOut}
-                        className="btn"
+                        className="btn mobile-w-full"
                         style={{ minWidth: '140px', padding: '0.8rem 1.5rem', fontSize: '1rem', background: '#ffffff', color: '#dc2626', borderRadius: '2px', border: '1px solid #dc2626', fontWeight: '700', textTransform: 'uppercase' }}
                     >
                         Check Out
@@ -164,7 +164,8 @@ const Attendance = () => {
                     </div>
                 </div>
 
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                <div className="table-container" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', minWidth: '600px' }}>
                     <thead style={{ background: '#f8f9fa' }}>
                         <tr style={{ textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>
                             <th style={{ padding: '1rem 1.2rem', fontWeight: '700', color: '#374151', textTransform: 'uppercase', fontSize: '0.8rem' }}>Date</th>
@@ -198,8 +199,7 @@ const Attendance = () => {
                             </tr>
                         )}
                     </tbody>
-                </table>
-            </div>
+                </table>                </div>            </div>
         </motion.div>
     );
 };

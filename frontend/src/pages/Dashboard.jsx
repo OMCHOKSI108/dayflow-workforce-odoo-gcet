@@ -115,7 +115,7 @@ const Dashboard = () => {
                 </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }} className="mobile-grid-2">
                 <DashboardCard
                     title="Attendance"
                     value={stats.attendanceCount}
@@ -146,7 +146,7 @@ const Dashboard = () => {
                 />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }} className="mobile-grid-1">
                 {/* Recent Activity */}
                 <div style={{
                     background: 'white',

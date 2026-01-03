@@ -1,0 +1,72 @@
+
+# DAYFLOW - PROJECT SUMMARY AND VIDEO GUIDE
+
+## 1. FEATURE LIST & WHAT IT COVERS
+
+### Core HR & Workforce Management
+*   **Role-Based Access Control (RBAC)**: Secure Login/Signup for Employees, HR, and Admins with distinct dashboards and permissions.
+*   **Employee Management**: Centralized database to view, edit, and manage employee profiles and details.
+*   **Attendance Tracking**: Geo-fencing or simple Check-in/Check-out system with daily logs and status (Present, Absent, Late).
+*   **Leave Management System**: 
+    *   Employees can apply for different leave types (sick, casual, etc.).
+    *   Admins/HR can view, approve, or reject requests with comments.
+*   **Payroll Visibility**: Employees can view their salary structure and basic payroll info (Read-only).
+*   **Task Management**: Assign tasks to employees and track their completion status.
+*   **Announcements**: Admin broadcasts important updates to all employees.
+
+### Advanced & AI Features
+*   **AI Chatbot Assistant**: "Dayflow Assistant" to answer employee queries (e.g., "How do I apply for leave?").
+*   **Interactive Dashboard**: Visual analytics for Admins (workforce stats) and personal value cards for Employees.
+*   **Notifications**: Real-time updates for task assignments or leave status changes.
+
+---
+
+## 2. VIDEO SCREEN RECORDING FLOW (EXPLANATION SCRIPT)
+
+**Total Duration Goal: 3-5 Minutes**
+
+### **STEP 1: INTRO (0:00 - 0:30)**
+*   **Visual**: Show the Landing Page (Home.jsx).
+*   **Voiceover**: "Hi, I am [Your Name]. This is Dayflow, a modern Human Resource Management System designed to digitize and automate workforce operations. It solves the problem of manual, fragmented HR processes for SMEs."
+
+### **STEP 2: EMPLOYEE WORKFLOW (0:30 - 1:30)**
+*   **Action**: Login as an **Employee** (use a demo account).
+*   **Visual**: Employee Dashboard.
+*   **Key Points to Show**:
+    1.  **Attendance**: Click "Check In". Show the status update.
+    2.  **Leave**: Go to "Leaves" page -> Apply for a leave (select date, reason) -> Submit.
+    3.  **Tasks**: Briefly show the "Your Tasks" section.
+    4.  **Chatbot**: Open the bot, ask "How do I check my attendance?", show the response.
+
+### **STEP 3: ADMIN/HR WORKFLOW (1:30 - 3:00)**
+*   **Action**: Logout and Login as **Admin**.
+*   **Visual**: Admin Dashboard (highlight the different stats/charts).
+*   **Key Points to Show**:
+    1.  **Employee Management**: Go to "Employees" list -> Show how to view details.
+    2.  **Leave Approval**: Go to "Leaves" (Admin View) -> See the request made in Step 2 -> Click "Approve".
+    3.  **Task Assignment**: Go to "Tasks" -> Create a new task and assign it to the employee.
+    4.  **Announcements**: Post a "Welcome to the new system" announcement.
+
+### **STEP 4: TECHNICAL HIGHLIGHTS & CONCLUSION (3:00 - End)**
+*   **Visual**: Briefly show VS Code (optional) or back to Landing Page.
+*   **Voiceover**: "The app is built using the MERN stack (MongoDB, Express, React, Node.js) with JWT for security and AI integration for the chatbot. It's scalable and user-friendly. Thank you."
+
+---
+
+## 3. CHECKLIST FOR RECORDING
+
+### Preparation
+- [ ] **Clean Data**: clear test data or create fresh "Demo User" and "Demo Admin" accounts.
+- [ ] **Reset State**: Ensure the Employee is "Checked Out" before you start, so you can show the Check-In action.
+- [ ] **Script**: Have bullet points ready on a second screen or piece of paper. Do not read word-for-word, just talk naturally.
+- [ ] **Resolution**: Record in 1080p (1920x1080).
+- [ ] **Audio**: Use a quiet room. Test your microphone volume first.
+
+### During Recording
+- [ ] **Mouse Movements**: Move strictly and smoothly to where you want to click. Avoid jiggling the mouse while talking.
+- [ ] **Pacing**: Don't rush. Click -> Pause for half a second implies the system is working -> Then Explain.
+- [ ] **Zoom**: If a text is small (like a notification), you can zoom in slightly in post-production, or use browser zoom (110%) during recording.
+
+### Post-Recording
+- [ ] **Trim**: Cut out the start/end awkward pauses.
+- [ ] **Speed**: If a page load is slow, speed that specific part up in the editor.

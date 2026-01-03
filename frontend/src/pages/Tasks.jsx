@@ -119,11 +119,12 @@ const Tasks = () => {
             {/* Filter Tabs */}
             <div style={{ 
                 display: 'flex', 
-                gap: '1rem', 
+                gap: '0.5rem', 
                 marginBottom: '2rem',
                 borderBottom: '2px solid #e5e7eb',
-                paddingBottom: '0.5rem'
-            }}>
+                paddingBottom: '0.5rem',
+                flexWrap: 'wrap'
+            }} className="mobile-gap-sm">
                 {['all', 'pending', 'inprogress', 'completed'].map(f => (
                     <button
                         key={f}

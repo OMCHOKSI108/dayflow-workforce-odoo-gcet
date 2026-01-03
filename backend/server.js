@@ -40,7 +40,75 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('API is running...');
+    res.json({
+        message: 'Dayflow HRMS API v1.0',
+        status: 'running',
+        documentation: '/api/docs',
+        endpoints: {
+            authentication: {
+                login: 'POST /api/users/login',
+                register: 'POST /api/users'
+            },
+            users: {
+                getAll: 'GET /api/users (Admin)',
+                getProfile: 'GET /api/users/profile',
+                updateProfile: 'PUT /api/users/profile',
+                createEmployee: 'POST /api/users/create (Admin)',
+                getById: 'GET /api/users/:id (Admin)',
+                updateById: 'PUT /api/users/:id (Admin)',
+                deleteById: 'DELETE /api/users/:id (Admin)',
+                dashboardStats: 'GET /api/users/dashboard/stats'
+            },
+            attendance: {
+                checkIn: 'POST /api/attendance/checkin',
+                checkOut: 'POST /api/attendance/checkout',
+                getMy: 'GET /api/attendance/my',
+                getAll: 'GET /api/attendance (Admin)',
+                update: 'PUT /api/attendance/:id (Admin)',
+                delete: 'DELETE /api/attendance/:id (Admin)'
+            },
+            leaves: {
+                apply: 'POST /api/leaves',
+                getMy: 'GET /api/leaves/my',
+                getAll: 'GET /api/leaves (Admin)',
+                updateStatus: 'PUT /api/leaves/:id (Admin)',
+                delete: 'DELETE /api/leaves/:id'
+            },
+            tasks: {
+                create: 'POST /api/tasks (Admin)',
+                getAll: 'GET /api/tasks',
+                getMy: 'GET /api/tasks/my',
+                getById: 'GET /api/tasks/:id',
+                update: 'PUT /api/tasks/:id',
+                delete: 'DELETE /api/tasks/:id (Admin)',
+                addComment: 'POST /api/tasks/:id/comment'
+            },
+            announcements: {
+                create: 'POST /api/announcements (Admin)',
+                getAll: 'GET /api/announcements',
+                update: 'PUT /api/announcements/:id (Admin)',
+                delete: 'DELETE /api/announcements/:id (Admin)'
+            },
+            chat: {
+                sendMessage: 'POST /api/chat'
+            },
+            superadmin: {
+                getAllCompanies: 'GET /api/superadmin/companies (SuperAdmin)',
+                getAllAdmins: 'GET /api/superadmin/admins (SuperAdmin)',
+                getCompanyDetails: 'GET /api/superadmin/company/:id (SuperAdmin)',
+                getSystemStats: 'GET /api/superadmin/stats (SuperAdmin)',
+                deleteCompany: 'DELETE /api/superadmin/company/:id (SuperAdmin)',
+                updateUser: 'PUT /api/superadmin/user/:id (SuperAdmin)'
+            }
+        },
+        tech_stack: {
+            runtime: 'Node.js 22.x',
+            framework: 'Express.js 5.x',
+            database: 'MongoDB 6.x with Mongoose',
+            authentication: 'JWT (JSON Web Tokens)',
+            ai: 'Groq LLaMA 3.3 70B Versatile'
+        }
+    });
 });
 
 const userRoutes = require('./routes/userRoutes');
