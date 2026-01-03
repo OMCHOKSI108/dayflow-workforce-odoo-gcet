@@ -421,7 +421,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 | # | Name | Role |
 |:-:|------|------|
 | 1 | **Om Choksi** | Team Lead & Backend Developer |
-| 2 | **Hari Patel** | Frontend Developer |
+| 2 | **Hari Patel** | Frontend Developer & Backend Developer|
 | 3 | **Dev Patel** | UI/UX & Database |
 | 4 | **Brijesh Rakhasiya** | API Integration & Testing |
 
